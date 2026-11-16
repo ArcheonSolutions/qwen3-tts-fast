@@ -1,0 +1,127 @@
+diff --git a/vllm_omni/model_executor/models/qwen3_tts/prompt_embeds_builder.py b/vllm_omni/model_executor/models/qwen3_tts/prompt_embeds_builder.py
+index db6c86b..47e74b4 100644
+--- a/vllm_omni/model_executor/models/qwen3_tts/prompt_embeds_builder.py
++++ b/vllm_omni/model_executor/models/qwen3_tts/prompt_embeds_builder.py
+@@ -383,6 +383,7 @@ class Qwen3TTSPromptEmbedsBuilder:
+         self._ref_audio_artifact_cache_max_entries = int(ref_audio_artifact_cache_max_entries)
+         self._ref_audio_artifact_cache: OrderedDict[str, dict[str, torch.Tensor | bool]] = OrderedDict()
+         self._long_tensor_cache: dict[tuple[str, tuple[int, ...]], torch.Tensor] = {}
++        self._ref_code_device_cache: OrderedDict[tuple, torch.Tensor] = OrderedDict()
+ 
+         # Bounded LRU; caller-supplied orig_sr can otherwise grow this without limit.
+         self._resampler_cache: OrderedDict[tuple[int, int], AudioResampler] = OrderedDict()
+@@ -398,6 +399,21 @@ class Qwen3TTSPromptEmbedsBuilder:
+         """Return the pad-token embedding on the requested device/dtype, shape ``[1, 1, H]``."""
+         return self._tts_pad_embed_buffer.to(device=device, dtype=dtype).reshape(1, 1, -1)
+ 
++    def _device_ref_code(self, ref_code: torch.Tensor, device: torch.device) -> torch.Tensor:
++        if ref_code.device.type != "cpu":
++            return ref_code.to(device=device, dtype=torch.long)
++        cpu = ref_code.to(dtype=torch.long).contiguous()
++        key = (str(device), tuple(cpu.shape), hashlib.sha1(cpu.numpy().tobytes()).hexdigest())
++        cached = self._ref_code_device_cache.get(key)
++        if cached is None:
++            cached = cpu.to(device=device)
++            self._ref_code_device_cache[key] = cached
++            while len(self._ref_code_device_cache) > 64:
++                self._ref_code_device_cache.popitem(last=False)
++        else:
++            self._ref_code_device_cache.move_to_end(key)
++        return cached
++
+     def _long_tensor(self, values: Sequence[int], device: torch.device) -> torch.Tensor:
+         device = torch.device(device)
+         if device.type == "cuda" and device.index is None:
+@@ -1447,7 +1463,7 @@ class Qwen3TTSPromptEmbedsBuilder:
+                         ref_code_cached = _cached.get("ref_code")
+                         ref_spk_embed_cached = _cached.get("ref_spk_embedding")
+                         if isinstance(ref_code_cached, torch.Tensor):
+-                            ref_code_cached = ref_code_cached.to(device=input_ids.device)
++                            ref_code_cached = self._device_ref_code(ref_code_cached, input_ids.device)
+                         if isinstance(ref_spk_embed_cached, torch.Tensor):
+                             ref_spk_embed_cached = ref_spk_embed_cached.to(device=input_ids.device)
+                         voice_clone_prompt = {
+@@ -1477,7 +1493,7 @@ class Qwen3TTSPromptEmbedsBuilder:
+             if isinstance(ref_code_t, torch.Tensor):
+                 if ref_code_t.ndim == 3:
+                     ref_code_t = ref_code_t[0]
+-                ref_code_t = ref_code_t.to(device=input_ids.device, dtype=torch.long)
++                ref_code_t = self._device_ref_code(ref_code_t, input_ids.device)
+                 ref_code_len = int(ref_code_t.shape[0])
+             else:
+                 codes = info_dict.get("codes")
+diff --git a/vllm_omni/model_executor/models/qwen3_tts/qwen3_tts_talker.py b/vllm_omni/model_executor/models/qwen3_tts/qwen3_tts_talker.py
+index 1cb8265..a3f1e22 100644
+--- a/vllm_omni/model_executor/models/qwen3_tts/qwen3_tts_talker.py
++++ b/vllm_omni/model_executor/models/qwen3_tts/qwen3_tts_talker.py
+@@ -4,6 +4,8 @@
+ from __future__ import annotations
+ 
+ import copy
++import os
++from collections import OrderedDict
+ from collections.abc import Iterable, Iterator, Mapping, Sequence
+ from contextlib import contextmanager
+ from typing import Any
+@@ -257,6 +259,8 @@ class Qwen3TTSTalkerForConditionalGeneration(nn.Module):
+         self.stream_prime_graphs = None
+         # Power-of-two frame counts below the priming chunk: see prime_stream_decoder.
+         self.stream_prime_pieces: dict[int, Any] = {}
++        self.stream_prime_cache: OrderedDict[tuple, tuple[torch.Tensor, list[torch.Tensor]]] = OrderedDict()
++        self.stream_prime_cache_size = int(os.environ.get("VLLM_OMNI_STREAM_PRIME_CACHE", "8"))
+         self.stream_sample_rate = 0
+         self.stream_chunk_frames = 25
+         # The runners bypass only the outer whole-MTP graph when explicit
+@@ -1495,13 +1499,51 @@ class Qwen3TTSTalkerForConditionalGeneration(nn.Module):
+             return None
+         return ref.reshape(-1, int(self.talker_config.num_code_groups))[-self.stream_ref_context_frames :]
+ 
++    @staticmethod
++    def _stream_prime_key(ref: torch.Tensor) -> tuple | None:
++        if ref.dtype.is_floating_point:
++            return None
++        if ref.device.type == "cpu":
++            return ("cpu", str(ref.dtype), tuple(ref.shape), ref.contiguous().numpy().tobytes())
++        storage = ref.untyped_storage()
++        return (str(ref.device), storage.data_ptr(), ref.storage_offset(), tuple(ref.shape), ref.stride())
++
+     def prime_stream_decoder(self, primes: list[tuple[int, torch.Tensor]]) -> None:
+-        """Prime equal-length reference groups without padding or aliasing live slots."""
+         if not primes:
+             return
+         stream = self.stream_decoder
+         if stream is None:
+             raise RuntimeError("Reference priming requires the single-stage PCM decoder")
++        cache, cap = self.stream_prime_cache, self.stream_prime_cache_size
++        if cap <= 0:
++            self._prime_stream_groups(stream, primes)
++            return
++        targets: list[torch.Tensor] = []
++        sources: list[torch.Tensor] = []
++        todo: list[tuple[int, torch.Tensor, tuple | None]] = []
++        for req_idx, ref in primes:
++            key = self._stream_prime_key(ref)
++            entry = cache.get(key) if key is not None else None
++            if entry is None:
++                todo.append((req_idx, ref, key))
++                continue
++            cache.move_to_end(key)
++            targets.extend(stream._slot_state(req_idx))
++            sources.extend(entry[1])
++        if targets:
++            logger.info_once("Qwen3-TTS stream decoder: restoring primed reference state from cache")
++            torch._foreach_copy_(targets, sources)
++        if not todo:
++            return
++        self._prime_stream_groups(stream, [(req_idx, ref) for req_idx, ref, _key in todo])
++        for req_idx, ref, key in todo:
++            if key is None or key in cache:
++                continue
++            cache[key] = (ref, [t.clone() for t in stream._slot_state(req_idx)])
++            while len(cache) > cap:
++                cache.popitem(last=False)
++
++    def _prime_stream_groups(self, stream, primes: list[tuple[int, torch.Tensor]]) -> None:
+         groups: dict[int, list[tuple[int, torch.Tensor]]] = {}
+         for req_idx, ref in primes:
+             groups.setdefault(int(ref.shape[0]), []).append((req_idx, ref))

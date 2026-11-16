@@ -1,0 +1,48 @@
+diff --git a/vllm_omni/worker_v2/streaming_audio.py b/vllm_omni/worker_v2/streaming_audio.py
+index bf78de6..bd5a1d4 100644
+--- a/vllm_omni/worker_v2/streaming_audio.py
++++ b/vllm_omni/worker_v2/streaming_audio.py
+@@ -4,6 +4,7 @@
+ 
+ from __future__ import annotations
+ 
++import os
+ import threading
+ from collections.abc import Callable, Iterable
+ from dataclasses import dataclass, field
+@@ -14,6 +15,9 @@ import torch
+ from vllm_omni.data_entry_keys import FIRST_AUDIO_REQUIRED_KEY
+ 
+ 
++CHUNK_RAMP = tuple(int(n) for n in os.environ.get("VLLM_OMNI_STREAM_CHUNK_RAMP", "").split(",") if n.strip())
++
++
+ @dataclass
+ class AudioRequest:
+     samples_per_frame: int
+@@ -24,6 +28,7 @@ class AudioRequest:
+     first_audio_required: bool = False
+     pending: list[torch.Tensor | np.ndarray] = field(default_factory=list)
+     pending_samples: int = 0
++    emissions: int = 0
+     lock: threading.Lock = field(default_factory=threading.Lock)
+ 
+     def accept_first_audio(self) -> None:
+@@ -48,7 +53,8 @@ class AudioRequest:
+                 self.pending_samples += size
+             frames = self.pending_samples // self.samples_per_frame
+             out = None
+-            if frames and (ended or not self.emitted or frames >= self.chunk_frames):
++            target = CHUNK_RAMP[min(self.emissions, len(CHUNK_RAMP)-1)] if CHUNK_RAMP else self.chunk_frames
++            if frames and (ended or not self.emitted or frames >= target):
+                 if all(isinstance(part, np.ndarray) for part in self.pending):
+                     array = np.concatenate(self.pending) if len(self.pending) > 1 else self.pending[0]
+                     out = torch.from_numpy(array)
+@@ -58,6 +64,7 @@ class AudioRequest:
+                 self.pending.clear()
+                 self.pending_samples = 0
+                 self.emitted = True
++                self.emissions += 1
+             if ended:
+                 self.active = False
+                 self.pending.clear()

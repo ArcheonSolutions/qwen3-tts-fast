@@ -1,0 +1,1010 @@
+[
+ {
+  "i": 0,
+  "r": 0,
+  "cer": 0.0,
+  "seconds": 3.92,
+  "heard": "Bonjour, merci de votre appel. Je suis ravi de pouvoir vous aider ce soir."
+ },
+ {
+  "i": 1,
+  "r": 0,
+  "cer": 0.0,
+  "seconds": 3.28,
+  "heard": "Pouvez-vous me rappeler le numéro de votre commande, s'il vous plaît?"
+ },
+ {
+  "i": 2,
+  "r": 0,
+  "cer": 0.0,
+  "seconds": 4.72,
+  "heard": "Votre colis a quitté l'entrepôt ce matin et il arrive demain avant midi."
+ },
+ {
+  "i": 3,
+  "r": 0,
+  "cer": 0.0,
+  "seconds": 3.44,
+  "heard": "Je note votre demande dans votre dossier, c'est promis."
+ },
+ {
+  "i": 4,
+  "r": 0,
+  "cer": 0.0,
+  "seconds": 3.68,
+  "heard": "Nos équipes travaillent jour et nuit pour préparer toutes les livraisons."
+ },
+ {
+  "i": 5,
+  "r": 0,
+  "cer": 0.0,
+  "seconds": 3.76,
+  "heard": "Est-ce que vous avez bien reçu le courriel de confirmation hier soir ?"
+ },
+ {
+  "i": 6,
+  "r": 0,
+  "cer": 0.0,
+  "seconds": 4.64,
+  "heard": "Il pleut beaucoup dans la région et le livreur aura peut-être un peu de retard."
+ },
+ {
+  "i": 7,
+  "r": 0,
+  "cer": 0.0,
+  "seconds": 3.36,
+  "heard": "Quel est le modèle qui vous intéresse le plus pour cet hiver ?"
+ },
+ {
+  "i": 8,
+  "r": 0,
+  "cer": 0.0,
+  "seconds": 4.8,
+  "heard": "Un vélo rouge, c'est un excellent choix. Je vérifie le stock tout de suite."
+ },
+ {
+  "i": 9,
+  "r": 0,
+  "cer": 0.0,
+  "seconds": 3.6,
+  "heard": "N'oubliez pas de garder votre facture jusqu'à la fin de la garantie."
+ },
+ {
+  "i": 10,
+  "r": 0,
+  "cer": 0.0,
+  "seconds": 3.52,
+  "heard": "Votre voisin nous a aussi laissé un très gentil message."
+ },
+ {
+  "i": 11,
+  "r": 0,
+  "cer": 0.0,
+  "seconds": 4.88,
+  "heard": "Je dois vous laisser maintenant un autre client m'attend. Bonne soirée."
+ },
+ {
+  "i": 0,
+  "r": 1,
+  "cer": 0.0,
+  "seconds": 4.88,
+  "heard": "Bonjour, merci de votre appel. Je suis ravi de pouvoir vous aider ce soir."
+ },
+ {
+  "i": 1,
+  "r": 1,
+  "cer": 0.0,
+  "seconds": 3.6,
+  "heard": "Pouvez-vous me rappeler le numéro de votre commande, s'il vous plaît ?"
+ },
+ {
+  "i": 2,
+  "r": 1,
+  "cer": 0.0,
+  "seconds": 4.88,
+  "heard": "Votre colis a quitté l'entrepôt ce matin et il arrive demain avant midi."
+ },
+ {
+  "i": 3,
+  "r": 1,
+  "cer": 0.0,
+  "seconds": 3.36,
+  "heard": "Je note votre demande dans votre dossier, c'est promis."
+ },
+ {
+  "i": 4,
+  "r": 1,
+  "cer": 0.0,
+  "seconds": 3.92,
+  "heard": "Nos équipes travaillent jour et nuit pour préparer toutes les livraisons."
+ },
+ {
+  "i": 5,
+  "r": 1,
+  "cer": 0.0,
+  "seconds": 4.0,
+  "heard": "Est-ce que vous avez bien reçu le courriel de confirmation hier soir ?"
+ },
+ {
+  "i": 6,
+  "r": 1,
+  "cer": 0.0,
+  "seconds": 4.64,
+  "heard": "Il pleut beaucoup dans la région et le livreur aura peut-être un peu de retard."
+ },
+ {
+  "i": 7,
+  "r": 1,
+  "cer": 0.0,
+  "seconds": 3.92,
+  "heard": "Quel est le modèle qui vous intéresse le plus pour cet hiver ?"
+ },
+ {
+  "i": 8,
+  "r": 1,
+  "cer": 0.0,
+  "seconds": 4.56,
+  "heard": "Un vélo rouge, c'est un excellent choix. Je vérifie le stock tout de suite."
+ },
+ {
+  "i": 9,
+  "r": 1,
+  "cer": 0.0,
+  "seconds": 3.76,
+  "heard": "N'oubliez pas de garder votre facture jusqu'à la fin de la garantie."
+ },
+ {
+  "i": 10,
+  "r": 1,
+  "cer": 0.0,
+  "seconds": 3.04,
+  "heard": "Votre voisin nous a aussi laissé un très gentil message."
+ },
+ {
+  "i": 11,
+  "r": 1,
+  "cer": 0.0,
+  "seconds": 4.64,
+  "heard": "Je dois vous laisser maintenant, un autre client m'attend. Bonne soirée !"
+ },
+ {
+  "i": 0,
+  "r": 2,
+  "cer": 0.0,
+  "seconds": 4.24,
+  "heard": "Bonjour, merci de votre appel. Je suis ravi de pouvoir vous aider ce soir."
+ },
+ {
+  "i": 1,
+  "r": 2,
+  "cer": 0.0,
+  "seconds": 3.2,
+  "heard": "Pouvez-vous me rappeler le numéro de votre commande, s'il vous plaît ?"
+ },
+ {
+  "i": 2,
+  "r": 2,
+  "cer": 0.0,
+  "seconds": 4.56,
+  "heard": "Votre colis a quitté l'entrepôt ce matin et il arrive demain avant midi."
+ },
+ {
+  "i": 3,
+  "r": 2,
+  "cer": 0.0,
+  "seconds": 3.28,
+  "heard": "Je note votre demande dans votre dossier, c'est promis."
+ },
+ {
+  "i": 4,
+  "r": 2,
+  "cer": 0.0,
+  "seconds": 4.56,
+  "heard": "Nos équipes travaillent jour et nuit pour préparer toutes les livraisons."
+ },
+ {
+  "i": 5,
+  "r": 2,
+  "cer": 0.0,
+  "seconds": 3.52,
+  "heard": "Est-ce que vous avez bien reçu le courriel de confirmation hier soir ?"
+ },
+ {
+  "i": 6,
+  "r": 2,
+  "cer": 0.0,
+  "seconds": 5.12,
+  "heard": "Il pleut beaucoup dans la région et le livreur aura peut-être un peu de retard."
+ },
+ {
+  "i": 7,
+  "r": 2,
+  "cer": 0.0,
+  "seconds": 3.84,
+  "heard": "Quel est le modèle qui vous intéresse le plus pour cet hiver ?"
+ },
+ {
+  "i": 8,
+  "r": 2,
+  "cer": 0.0,
+  "seconds": 4.88,
+  "heard": "Un vélo rouge, c'est un excellent choix. Je vérifie le stock tout de suite."
+ },
+ {
+  "i": 9,
+  "r": 2,
+  "cer": 0.0,
+  "seconds": 4.48,
+  "heard": "N'oubliez pas de garder votre facture jusqu'à la fin de la garantie."
+ },
+ {
+  "i": 10,
+  "r": 2,
+  "cer": 0.0,
+  "seconds": 3.84,
+  "heard": "Votre voisin nous a aussi laissé un très gentil message."
+ },
+ {
+  "i": 11,
+  "r": 2,
+  "cer": 0.0,
+  "seconds": 4.72,
+  "heard": "Je dois vous laisser maintenant. Un autre client m'attend. Bonne soirée."
+ },
+ {
+  "i": 0,
+  "r": 3,
+  "cer": 0.0,
+  "seconds": 4.32,
+  "heard": "Bonjour, merci de votre appel. Je suis ravi de pouvoir vous aider ce soir."
+ },
+ {
+  "i": 1,
+  "r": 3,
+  "cer": 0.0,
+  "seconds": 3.68,
+  "heard": "Pouvez-vous me rappeler le numéro de votre commande, s'il vous plaît ?"
+ },
+ {
+  "i": 2,
+  "r": 3,
+  "cer": 0.0,
+  "seconds": 5.04,
+  "heard": "Votre colis a quitté l'entrepôt ce matin et il arrive demain avant midi."
+ },
+ {
+  "i": 3,
+  "r": 3,
+  "cer": 0.0,
+  "seconds": 3.36,
+  "heard": "Je note votre demande dans votre dossier, c'est promis."
+ },
+ {
+  "i": 4,
+  "r": 3,
+  "cer": 0.0,
+  "seconds": 3.84,
+  "heard": "Nos équipes travaillent jour et nuit pour préparer toutes les livraisons."
+ },
+ {
+  "i": 5,
+  "r": 3,
+  "cer": 0.0,
+  "seconds": 3.76,
+  "heard": "Est-ce que vous avez bien reçu le courriel de confirmation hier soir ?"
+ },
+ {
+  "i": 6,
+  "r": 3,
+  "cer": 0.0,
+  "seconds": 4.64,
+  "heard": "Il pleut beaucoup dans la région et le livreur aura peut-être un peu de retard."
+ },
+ {
+  "i": 7,
+  "r": 3,
+  "cer": 0.0,
+  "seconds": 3.76,
+  "heard": "Quel est le modèle qui vous intéresse le plus pour cet hiver ?"
+ },
+ {
+  "i": 8,
+  "r": 3,
+  "cer": 0.0,
+  "seconds": 5.44,
+  "heard": "Un vélo rouge, c'est un excellent choix. Je vérifie le stock tout de suite."
+ },
+ {
+  "i": 9,
+  "r": 3,
+  "cer": 0.0,
+  "seconds": 3.84,
+  "heard": "N'oubliez pas de garder votre facture jusqu'à la fin de la garantie."
+ },
+ {
+  "i": 10,
+  "r": 3,
+  "cer": 0.0,
+  "seconds": 3.52,
+  "heard": "Votre voisin nous a aussi laissé un très gentil message."
+ },
+ {
+  "i": 11,
+  "r": 3,
+  "cer": 0.0,
+  "seconds": 4.88,
+  "heard": "Je dois vous laisser maintenant. Un autre client m'attend. Bonne soirée."
+ },
+ {
+  "i": 0,
+  "r": 4,
+  "cer": 0.0,
+  "seconds": 4.24,
+  "heard": "Bonjour, merci de votre appel. Je suis ravi de pouvoir vous aider ce soir."
+ },
+ {
+  "i": 1,
+  "r": 4,
+  "cer": 0.0,
+  "seconds": 3.84,
+  "heard": "Pouvez-vous me rappeler le numéro de votre commande, s'il vous plaît ?"
+ },
+ {
+  "i": 2,
+  "r": 4,
+  "cer": 0.0,
+  "seconds": 4.56,
+  "heard": "Votre colis a quitté l'entrepôt ce matin et il arrive demain avant midi."
+ },
+ {
+  "i": 3,
+  "r": 4,
+  "cer": 0.0,
+  "seconds": 3.36,
+  "heard": "Je note votre demande dans votre dossier. C'est promis."
+ },
+ {
+  "i": 4,
+  "r": 4,
+  "cer": 0.0,
+  "seconds": 3.52,
+  "heard": "Nos équipes travaillent jour et nuit pour préparer toutes les livraisons."
+ },
+ {
+  "i": 5,
+  "r": 4,
+  "cer": 0.0,
+  "seconds": 3.92,
+  "heard": "Est-ce que vous avez bien reçu le courriel de confirmation hier soir ?"
+ },
+ {
+  "i": 6,
+  "r": 4,
+  "cer": 0.0,
+  "seconds": 4.96,
+  "heard": "Il pleut beaucoup dans la région et le livreur aura peut-être un peu de retard."
+ },
+ {
+  "i": 7,
+  "r": 4,
+  "cer": 0.0,
+  "seconds": 3.68,
+  "heard": "Quel est le modèle qui vous intéresse le plus pour cet hiver ?"
+ },
+ {
+  "i": 8,
+  "r": 4,
+  "cer": 0.0,
+  "seconds": 4.72,
+  "heard": "Un vélo rouge, c'est un excellent choix. Je vérifie le stock tout de suite."
+ },
+ {
+  "i": 9,
+  "r": 4,
+  "cer": 0.0,
+  "seconds": 4.0,
+  "heard": "N'oubliez pas de garder votre facture jusqu'à la fin de la garantie."
+ },
+ {
+  "i": 10,
+  "r": 4,
+  "cer": 0.0,
+  "seconds": 3.28,
+  "heard": "Votre voisin nous a aussi laissé un très gentil message."
+ },
+ {
+  "i": 11,
+  "r": 4,
+  "cer": 0.0,
+  "seconds": 5.28,
+  "heard": "Je dois vous laisser maintenant. Un autre client m'attend. Bonne soirée."
+ },
+ {
+  "i": 0,
+  "r": 5,
+  "cer": 0.0,
+  "seconds": 4.64,
+  "heard": "Bonjour, merci de votre appel. Je suis ravi de pouvoir vous aider ce soir."
+ },
+ {
+  "i": 1,
+  "r": 5,
+  "cer": 0.0,
+  "seconds": 3.36,
+  "heard": "Pouvez-vous me rappeler le numéro de votre commande, s'il vous plaît ?"
+ },
+ {
+  "i": 2,
+  "r": 5,
+  "cer": 0.0,
+  "seconds": 4.48,
+  "heard": "Votre colis a quitté l'entrepôt ce matin et il arrive demain avant midi."
+ },
+ {
+  "i": 3,
+  "r": 5,
+  "cer": 0.0,
+  "seconds": 3.2,
+  "heard": "Je note votre demande dans votre dossier, c'est promis."
+ },
+ {
+  "i": 4,
+  "r": 5,
+  "cer": 0.0,
+  "seconds": 3.52,
+  "heard": "Nos équipes travaillent jour et nuit pour préparer toutes les livraisons."
+ },
+ {
+  "i": 5,
+  "r": 5,
+  "cer": 0.0,
+  "seconds": 4.16,
+  "heard": "Est-ce que vous avez bien reçu le courriel de confirmation hier soir ?"
+ },
+ {
+  "i": 6,
+  "r": 5,
+  "cer": 0.0,
+  "seconds": 5.2,
+  "heard": "Il pleut beaucoup dans la région et le livreur aura peut-être un peu de retard."
+ },
+ {
+  "i": 7,
+  "r": 5,
+  "cer": 0.0,
+  "seconds": 3.68,
+  "heard": "Quel est le modèle qui vous intéresse le plus pour cet hiver ?"
+ },
+ {
+  "i": 8,
+  "r": 5,
+  "cer": 0.0,
+  "seconds": 4.08,
+  "heard": "Un vélo rouge, c'est un excellent choix. Je vérifie le stock tout de suite."
+ },
+ {
+  "i": 9,
+  "r": 5,
+  "cer": 0.0,
+  "seconds": 3.68,
+  "heard": "N'oubliez pas de garder votre facture jusqu'à la fin de la garantie."
+ },
+ {
+  "i": 10,
+  "r": 5,
+  "cer": 0.0,
+  "seconds": 3.2,
+  "heard": "Votre voisin nous a aussi laissé un très gentil message."
+ },
+ {
+  "i": 11,
+  "r": 5,
+  "cer": 0.0,
+  "seconds": 4.64,
+  "heard": "Je dois vous laisser maintenant un autre client m'attend. Bonne soirée."
+ },
+ {
+  "i": 0,
+  "r": 6,
+  "cer": 0.0,
+  "seconds": 4.64,
+  "heard": "Bonjour, merci de votre appel. Je suis ravi de pouvoir vous aider ce soir."
+ },
+ {
+  "i": 1,
+  "r": 6,
+  "cer": 0.0,
+  "seconds": 3.68,
+  "heard": "Pouvez-vous me rappeler le numéro de votre commande, s'il vous plaît?"
+ },
+ {
+  "i": 2,
+  "r": 6,
+  "cer": 0.0,
+  "seconds": 5.28,
+  "heard": "Votre colis a quitté l'entrepôt ce matin et il arrive demain avant midi."
+ },
+ {
+  "i": 3,
+  "r": 6,
+  "cer": 0.0,
+  "seconds": 3.44,
+  "heard": "Je note votre demande dans votre dossier, c'est promis."
+ },
+ {
+  "i": 4,
+  "r": 6,
+  "cer": 0.0,
+  "seconds": 4.24,
+  "heard": "Nos équipes travaillent jour et nuit pour préparer toutes les livraisons."
+ },
+ {
+  "i": 5,
+  "r": 6,
+  "cer": 0.0,
+  "seconds": 4.0,
+  "heard": "Est-ce que vous avez bien reçu le courriel de confirmation hier soir ?"
+ },
+ {
+  "i": 6,
+  "r": 6,
+  "cer": 0.0,
+  "seconds": 4.72,
+  "heard": "Il pleut beaucoup dans la région et le livreur aura peut-être un peu de retard."
+ },
+ {
+  "i": 7,
+  "r": 6,
+  "cer": 0.0,
+  "seconds": 3.52,
+  "heard": "Quel est le modèle qui vous intéresse le plus pour cet hiver ?"
+ },
+ {
+  "i": 8,
+  "r": 6,
+  "cer": 0.0,
+  "seconds": 4.8,
+  "heard": "Un vélo rouge, c'est un excellent choix. Je vérifie le stock tout de suite."
+ },
+ {
+  "i": 9,
+  "r": 6,
+  "cer": 0.0,
+  "seconds": 3.6,
+  "heard": "N'oubliez pas de garder votre facture jusqu'à la fin de la garantie."
+ },
+ {
+  "i": 10,
+  "r": 6,
+  "cer": 0.0,
+  "seconds": 3.44,
+  "heard": "Votre voisin nous a aussi laissé un très gentil message."
+ },
+ {
+  "i": 11,
+  "r": 6,
+  "cer": 0.0,
+  "seconds": 4.0,
+  "heard": "Je dois vous laisser maintenant un autre client m'attend. Bonne soirée."
+ },
+ {
+  "i": 0,
+  "r": 7,
+  "cer": 0.0,
+  "seconds": 4.72,
+  "heard": "Bonjour, merci de votre appel. Je suis ravi de pouvoir vous aider ce soir."
+ },
+ {
+  "i": 1,
+  "r": 7,
+  "cer": 0.0,
+  "seconds": 3.44,
+  "heard": "Pouvez-vous me rappeler le numéro de votre commande, s'il vous plaît?"
+ },
+ {
+  "i": 2,
+  "r": 7,
+  "cer": 0.0,
+  "seconds": 4.8,
+  "heard": "Votre colis a quitté l'entrepôt ce matin et il arrive demain avant midi."
+ },
+ {
+  "i": 3,
+  "r": 7,
+  "cer": 0.0,
+  "seconds": 3.76,
+  "heard": "Je note votre demande dans votre dossier, c'est promis."
+ },
+ {
+  "i": 4,
+  "r": 7,
+  "cer": 0.0,
+  "seconds": 3.68,
+  "heard": "Nos équipes travaillent jour et nuit pour préparer toutes les livraisons."
+ },
+ {
+  "i": 5,
+  "r": 7,
+  "cer": 0.0,
+  "seconds": 3.52,
+  "heard": "Est-ce que vous avez bien reçu le courriel de confirmation hier soir ?"
+ },
+ {
+  "i": 6,
+  "r": 7,
+  "cer": 0.0,
+  "seconds": 4.48,
+  "heard": "Il pleut beaucoup dans la région et le livreur aura peut-être un peu de retard."
+ },
+ {
+  "i": 7,
+  "r": 7,
+  "cer": 0.0,
+  "seconds": 3.84,
+  "heard": "Quel est le modèle qui vous intéresse le plus pour cet hiver ?"
+ },
+ {
+  "i": 8,
+  "r": 7,
+  "cer": 0.0,
+  "seconds": 4.4,
+  "heard": "Un vélo rouge, c'est un excellent choix. Je vérifie le stock tout de suite."
+ },
+ {
+  "i": 9,
+  "r": 7,
+  "cer": 0.0,
+  "seconds": 3.6,
+  "heard": "N'oubliez pas de garder votre facture jusqu'à la fin de la garantie."
+ },
+ {
+  "i": 10,
+  "r": 7,
+  "cer": 0.0,
+  "seconds": 3.28,
+  "heard": "Votre voisin nous a aussi laissé un très gentil message."
+ },
+ {
+  "i": 11,
+  "r": 7,
+  "cer": 0.0,
+  "seconds": 4.4,
+  "heard": "Je dois vous laisser maintenant. Un autre client m'attend. Bonne soirée."
+ },
+ {
+  "i": 0,
+  "r": 8,
+  "cer": 0.0,
+  "seconds": 4.64,
+  "heard": "Bonjour, merci de votre appel. Je suis ravi de pouvoir vous aider ce soir."
+ },
+ {
+  "i": 1,
+  "r": 8,
+  "cer": 0.0,
+  "seconds": 3.2,
+  "heard": "Pouvez-vous me rappeler le numéro de votre commande, s'il vous plaît?"
+ },
+ {
+  "i": 2,
+  "r": 8,
+  "cer": 0.028169014084507043,
+  "seconds": 4.88,
+  "heard": "Votre colisse a quitté l'entrepôt ce matin et il arrive demain avant midi."
+ },
+ {
+  "i": 3,
+  "r": 8,
+  "cer": 0.0,
+  "seconds": 3.44,
+  "heard": "Je note votre demande dans votre dossier, c'est promis."
+ },
+ {
+  "i": 4,
+  "r": 8,
+  "cer": 0.0,
+  "seconds": 4.32,
+  "heard": "Nos équipes travaillent jour et nuit pour préparer toutes les livraisons."
+ },
+ {
+  "i": 5,
+  "r": 8,
+  "cer": 0.0,
+  "seconds": 4.24,
+  "heard": "Est-ce que vous avez bien reçu le courriel de confirmation hier soir ?"
+ },
+ {
+  "i": 6,
+  "r": 8,
+  "cer": 0.0,
+  "seconds": 4.72,
+  "heard": "Il pleut beaucoup dans la région et le livreur aura peut-être un peu de retard."
+ },
+ {
+  "i": 7,
+  "r": 8,
+  "cer": 0.0,
+  "seconds": 3.2,
+  "heard": "Quel est le modèle qui vous intéresse le plus pour cet hiver ?"
+ },
+ {
+  "i": 8,
+  "r": 8,
+  "cer": 0.0,
+  "seconds": 4.88,
+  "heard": "Un vélo rouge, c'est un excellent choix. Je vérifie le stock tout de suite."
+ },
+ {
+  "i": 9,
+  "r": 8,
+  "cer": 0.0,
+  "seconds": 4.0,
+  "heard": "N'oubliez pas de garder votre facture jusqu'à la fin de la garantie."
+ },
+ {
+  "i": 10,
+  "r": 8,
+  "cer": 0.0,
+  "seconds": 3.36,
+  "heard": "Votre voisin nous a aussi laissé un très gentil message."
+ },
+ {
+  "i": 11,
+  "r": 8,
+  "cer": 0.0,
+  "seconds": 4.72,
+  "heard": "Je dois vous laisser maintenant. Un autre client m'attend. Bonne soirée."
+ },
+ {
+  "i": 0,
+  "r": 9,
+  "cer": 0.0,
+  "seconds": 4.72,
+  "heard": "Bonjour, merci de votre appel, je suis ravi de pouvoir vous aider ce soir."
+ },
+ {
+  "i": 1,
+  "r": 9,
+  "cer": 0.0,
+  "seconds": 3.2,
+  "heard": "Pouvez-vous me rappeler le numéro de votre commande, s'il vous plaît?"
+ },
+ {
+  "i": 2,
+  "r": 9,
+  "cer": 0.0,
+  "seconds": 4.56,
+  "heard": "Votre colis a quitté l'entrepôt ce matin et il arrive demain avant midi."
+ },
+ {
+  "i": 3,
+  "r": 9,
+  "cer": 0.0,
+  "seconds": 3.2,
+  "heard": "Je note votre demande dans votre dossier, c'est promis."
+ },
+ {
+  "i": 4,
+  "r": 9,
+  "cer": 0.0,
+  "seconds": 4.0,
+  "heard": "Nos équipes travaillent jour et nuit pour préparer toutes les livraisons."
+ },
+ {
+  "i": 5,
+  "r": 9,
+  "cer": 0.0,
+  "seconds": 3.84,
+  "heard": "Est-ce que vous avez bien reçu le courriel de confirmation hier soir?"
+ },
+ {
+  "i": 6,
+  "r": 9,
+  "cer": 0.0,
+  "seconds": 4.48,
+  "heard": "Il pleut beaucoup dans la région et le livreur aura peut-être un peu de retard."
+ },
+ {
+  "i": 7,
+  "r": 9,
+  "cer": 0.0,
+  "seconds": 3.6,
+  "heard": "Quel est le modèle qui vous intéresse le plus pour cet hiver ?"
+ },
+ {
+  "i": 8,
+  "r": 9,
+  "cer": 0.0,
+  "seconds": 5.04,
+  "heard": "Un vélo rouge, c'est un excellent choix. Je vérifie le stock tout de suite."
+ },
+ {
+  "i": 9,
+  "r": 9,
+  "cer": 0.0,
+  "seconds": 3.68,
+  "heard": "N'oubliez pas de garder votre facture jusqu'à la fin de la garantie."
+ },
+ {
+  "i": 10,
+  "r": 9,
+  "cer": 0.0,
+  "seconds": 3.36,
+  "heard": "Votre voisin nous a aussi laissé un très gentil message."
+ },
+ {
+  "i": 11,
+  "r": 9,
+  "cer": 0.0,
+  "seconds": 4.56,
+  "heard": "Je dois vous laisser maintenant. Un autre client m'attend. Bonne soirée."
+ },
+ {
+  "i": 0,
+  "r": 10,
+  "cer": 0.0,
+  "seconds": 4.24,
+  "heard": "Bonjour, merci de votre appel. Je suis ravi de pouvoir vous aider ce soir."
+ },
+ {
+  "i": 1,
+  "r": 10,
+  "cer": 0.0,
+  "seconds": 3.28,
+  "heard": "Pouvez-vous me rappeler le numéro de votre commande, s'il vous plaît?"
+ },
+ {
+  "i": 2,
+  "r": 10,
+  "cer": 0.0,
+  "seconds": 4.88,
+  "heard": "Votre colis a quitté l'entrepôt ce matin et il arrive demain avant midi."
+ },
+ {
+  "i": 3,
+  "r": 10,
+  "cer": 0.0,
+  "seconds": 3.44,
+  "heard": "Je note votre demande dans votre dossier, c'est promis."
+ },
+ {
+  "i": 4,
+  "r": 10,
+  "cer": 0.0,
+  "seconds": 3.84,
+  "heard": "Nos équipes travaillent jour et nuit pour préparer toutes les livraisons."
+ },
+ {
+  "i": 5,
+  "r": 10,
+  "cer": 0.0,
+  "seconds": 3.92,
+  "heard": "Est-ce que vous avez bien reçu le courriel de confirmation hier soir ?"
+ },
+ {
+  "i": 6,
+  "r": 10,
+  "cer": 0.0,
+  "seconds": 4.72,
+  "heard": "Il pleut beaucoup dans la région et le livreur aura peut-être un peu de retard."
+ },
+ {
+  "i": 7,
+  "r": 10,
+  "cer": 0.0,
+  "seconds": 3.36,
+  "heard": "Quel est le modèle qui vous intéresse le plus pour cet hiver ?"
+ },
+ {
+  "i": 8,
+  "r": 10,
+  "cer": 0.0,
+  "seconds": 4.72,
+  "heard": "Un vélo rouge, c'est un excellent choix. Je vérifie le stock tout de suite."
+ },
+ {
+  "i": 9,
+  "r": 10,
+  "cer": 0.0,
+  "seconds": 3.6,
+  "heard": "N'oubliez pas de garder votre facture jusqu'à la fin de la garantie."
+ },
+ {
+  "i": 10,
+  "r": 10,
+  "cer": 0.0,
+  "seconds": 3.92,
+  "heard": "Votre voisin nous a aussi laissé un très gentil message."
+ },
+ {
+  "i": 11,
+  "r": 10,
+  "cer": 0.0,
+  "seconds": 4.64,
+  "heard": "Je dois vous laisser maintenant. Un autre client m'attend. Bonne soirée."
+ },
+ {
+  "i": 0,
+  "r": 11,
+  "cer": 0.0,
+  "seconds": 4.72,
+  "heard": "Bonjour, merci de votre appel. Je suis ravi de pouvoir vous aider ce soir."
+ },
+ {
+  "i": 1,
+  "r": 11,
+  "cer": 0.0,
+  "seconds": 3.52,
+  "heard": "Pouvez-vous me rappeler le numéro de votre commande, s'il vous plaît ?"
+ },
+ {
+  "i": 2,
+  "r": 11,
+  "cer": 0.0,
+  "seconds": 4.72,
+  "heard": "Votre colis a quitté l'entrepôt ce matin et il arrive demain avant midi."
+ },
+ {
+  "i": 3,
+  "r": 11,
+  "cer": 0.0,
+  "seconds": 3.6,
+  "heard": "Je note votre demande dans votre dossier, c'est promis."
+ },
+ {
+  "i": 4,
+  "r": 11,
+  "cer": 0.0,
+  "seconds": 3.76,
+  "heard": "Nos équipes travaillent jour et nuit pour préparer toutes les livraisons."
+ },
+ {
+  "i": 5,
+  "r": 11,
+  "cer": 0.0,
+  "seconds": 3.84,
+  "heard": "Est-ce que vous avez bien reçu le courriel de confirmation hier soir ?"
+ },
+ {
+  "i": 6,
+  "r": 11,
+  "cer": 0.0,
+  "seconds": 4.64,
+  "heard": "Il pleut beaucoup dans la région et le livreur aura peut-être un peu de retard."
+ },
+ {
+  "i": 7,
+  "r": 11,
+  "cer": 0.0,
+  "seconds": 3.44,
+  "heard": "Quel est le modèle qui vous intéresse le plus pour cet hiver ?"
+ },
+ {
+  "i": 8,
+  "r": 11,
+  "cer": 0.0,
+  "seconds": 4.96,
+  "heard": "Un vélo rouge, c'est un excellent choix. Je vérifie le stock tout de suite."
+ },
+ {
+  "i": 9,
+  "r": 11,
+  "cer": 0.0,
+  "seconds": 4.16,
+  "heard": "N'oubliez pas de garder votre facture jusqu'à la fin de la garantie."
+ },
+ {
+  "i": 10,
+  "r": 11,
+  "cer": 0.0,
+  "seconds": 3.44,
+  "heard": "Votre voisin nous a aussi laissé un très gentil message."
+ },
+ {
+  "i": 11,
+  "r": 11,
+  "cer": 0.0,
+  "seconds": 4.4,
+  "heard": "Je dois vous laisser maintenant. Un autre client m'attend. Bonne soirée."
+ }
+]

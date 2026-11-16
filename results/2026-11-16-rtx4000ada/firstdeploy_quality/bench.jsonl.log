@@ -1,0 +1,2 @@
+== bench/bench_quality.py --repeats 12 --concurrency 12 --out /root/results/firstdeploy_quality/quality
+{"out": "/root/results/firstdeploy_quality/quality", "clips": 144, "cer_mean": 0.0002, "cer_median": 0.0, "cer_max": 0.028, "bad_clips": 0, "seconds_mean": 4.08}

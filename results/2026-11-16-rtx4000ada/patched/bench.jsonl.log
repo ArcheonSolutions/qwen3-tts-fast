@@ -1,0 +1,18 @@
+== bench/bench_tts.py --levels 1,16,24,32,64 --rounds 3 --warmup
+{"concurrency": 1, "requests": 3, "ttfa_p50": 0.032, "ttfa_p95": 0.032, "rtf_p50": 0.144, "rtf_max": 0.147, "underrun_max": 0.0, "underrun_p95": 0.0, "gapped_pct": 0.0, "audio_per_wall": 6.91}
+{"concurrency": 16, "requests": 48, "ttfa_p50": 0.075, "ttfa_p95": 0.158, "rtf_p50": 0.186, "rtf_max": 0.212, "underrun_max": 0.0, "underrun_p95": 0.0, "gapped_pct": 0.0, "audio_per_wall": 78.33}
+{"concurrency": 24, "requests": 72, "ttfa_p50": 0.077, "ttfa_p95": 0.201, "rtf_p50": 0.221, "rtf_max": 0.256, "underrun_max": 0.0, "underrun_p95": 0.0, "gapped_pct": 0.0, "audio_per_wall": 100.11}
+{"concurrency": 32, "requests": 96, "ttfa_p50": 0.084, "ttfa_p95": 0.259, "rtf_p50": 0.244, "rtf_max": 0.296, "underrun_max": 0.0, "underrun_p95": 0.0, "gapped_pct": 0.0, "audio_per_wall": 114.66}
+{"concurrency": 64, "requests": 192, "ttfa_p50": 0.144, "ttfa_p95": 0.519, "rtf_p50": 0.361, "rtf_max": 0.487, "underrun_max": 0.0, "underrun_p95": 0.0, "gapped_pct": 0.0, "audio_per_wall": 160.93}
+== bench/bench_calls.py --calls 75,100,125,150,175,200 --seconds 90
+{"calls": 75, "turns": 692, "turn_ttfa_p50": 0.045, "turn_ttfa_p95": 0.058, "turn_ttfa_max": 0.066, "gapped_turns_pct": 0.0, "worst_gap": 0.0}
+{"calls": 100, "turns": 926, "turn_ttfa_p50": 0.047, "turn_ttfa_p95": 0.061, "turn_ttfa_max": 0.082, "gapped_turns_pct": 0.0, "worst_gap": 0.0}
+{"calls": 125, "turns": 1162, "turn_ttfa_p50": 0.049, "turn_ttfa_p95": 0.066, "turn_ttfa_max": 0.092, "gapped_turns_pct": 0.0, "worst_gap": 0.0}
+{"calls": 150, "turns": 1386, "turn_ttfa_p50": 0.053, "turn_ttfa_p95": 0.074, "turn_ttfa_max": 0.097, "gapped_turns_pct": 0.0, "worst_gap": 0.0}
+{"calls": 175, "turns": 1617, "turn_ttfa_p50": 0.057, "turn_ttfa_p95": 0.077, "turn_ttfa_max": 0.107, "gapped_turns_pct": 0.0, "worst_gap": 0.0}
+{"calls": 200, "turns": 1826, "turn_ttfa_p50": 0.061, "turn_ttfa_p95": 0.086, "turn_ttfa_max": 0.124, "gapped_turns_pct": 0.0, "worst_gap": 0.0}
+== bench/bench_calls.py --calls 125,150 --seconds 90 --turn-scale 2
+{"calls": 125, "turns": 774, "turn_ttfa_p50": 0.056, "turn_ttfa_p95": 0.075, "turn_ttfa_max": 0.089, "gapped_turns_pct": 0.0, "worst_gap": 0.0}
+{"calls": 150, "turns": 933, "turn_ttfa_p50": 0.066, "turn_ttfa_p95": 0.102, "turn_ttfa_max": 0.138, "gapped_turns_pct": 0.0, "worst_gap": 0.0}
+== bench/bench_quality.py --repeats 4 --concurrency 12 --out /root/results/patched/quality
+{"out": "/root/results/patched/quality", "clips": 48, "cer_mean": 0.0036, "cer_median": 0.0, "cer_max": 0.174, "bad_clips": 1, "seconds_mean": 4.07}

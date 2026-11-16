@@ -1,0 +1,15 @@
+== bench/bench_tts.py --levels 1,4,8,12,16,24 --rounds 3 --warmup
+{"concurrency": 1, "requests": 3, "ttfa_p50": 0.099, "ttfa_p95": 0.103, "rtf_p50": 0.263, "rtf_max": 0.268, "underrun_max": 0.197, "underrun_p95": 0.197, "gapped_pct": 100.0, "audio_per_wall": 3.79}
+{"concurrency": 4, "requests": 12, "ttfa_p50": 0.143, "ttfa_p95": 0.258, "rtf_p50": 0.34, "rtf_max": 0.35, "underrun_max": 0.362, "underrun_p95": 0.362, "gapped_pct": 100.0, "audio_per_wall": 10.94}
+{"concurrency": 8, "requests": 24, "ttfa_p50": 0.202, "ttfa_p95": 0.463, "rtf_p50": 0.417, "rtf_max": 0.44, "underrun_max": 0.56, "underrun_p95": 0.56, "gapped_pct": 100.0, "audio_per_wall": 18.28}
+{"concurrency": 12, "requests": 36, "ttfa_p50": 0.271, "ttfa_p95": 0.641, "rtf_p50": 0.541, "rtf_max": 0.565, "underrun_max": 0.858, "underrun_p95": 0.82, "gapped_pct": 100.0, "audio_per_wall": 21.48}
+{"concurrency": 16, "requests": 48, "ttfa_p50": 0.303, "ttfa_p95": 0.853, "rtf_p50": 0.603, "rtf_max": 0.654, "underrun_max": 1.099, "underrun_p95": 1.022, "gapped_pct": 100.0, "audio_per_wall": 25.36}
+{"concurrency": 24, "requests": 72, "ttfa_p50": 0.541, "ttfa_p95": 1.228, "rtf_p50": 0.824, "rtf_max": 0.903, "underrun_max": 1.535, "underrun_p95": 1.403, "gapped_pct": 100.0, "audio_per_wall": 27.79}
+== bench/bench_calls.py --calls 4,8,16,32 --seconds 90
+{"calls": 4, "turns": 36, "turn_ttfa_p50": 0.101, "turn_ttfa_p95": 0.152, "turn_ttfa_max": 0.153, "gapped_turns_pct": 100.0, "worst_gap": 0.611}
+{"calls": 8, "turns": 71, "turn_ttfa_p50": 0.101, "turn_ttfa_p95": 0.144, "turn_ttfa_max": 0.183, "gapped_turns_pct": 100.0, "worst_gap": 0.661}
+{"calls": 16, "turns": 140, "turn_ttfa_p50": 0.13, "turn_ttfa_p95": 0.187, "turn_ttfa_max": 0.214, "gapped_turns_pct": 100.0, "worst_gap": 0.931}
+{"calls": 32, "turns": 273, "turn_ttfa_p50": 0.158, "turn_ttfa_p95": 0.282, "turn_ttfa_max": 0.446, "gapped_turns_pct": 100.0, "worst_gap": 1.278}
+== bench/bench_quality.py --repeats 4 --concurrency 12 --out /root/results/stock/quality
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+{"out": "/root/results/stock/quality", "clips": 48, "cer_mean": 0.0003, "cer_median": 0.0, "cer_max": 0.014, "bad_clips": 0, "seconds_mean": 4.04}

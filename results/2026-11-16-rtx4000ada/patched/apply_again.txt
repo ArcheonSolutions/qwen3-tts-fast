@@ -1,0 +1,7 @@
+already applied 0001-stream-chunk-ramp.patch
+already applied 0002-codec-transconv-as-2tap-conv.patch
+already applied 0003-codec-igemm-all-units-autotune.patch
+already applied 0004-code-predictor-fp8-chain-sm89.patch
+already applied 0005-stream-prime-state-cache.patch
+already applied 0006-talker-fp8-w8a16-small-m.patch
+already applied 0007-icl-ref-codec-embed-cache.patch

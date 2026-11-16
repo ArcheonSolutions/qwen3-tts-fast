@@ -1,0 +1,2 @@
+== bench/bench_tts.py --levels 64 --rounds 3
+{"concurrency": 64, "requests": 192, "ttfa_p50": 0.132, "ttfa_p95": 0.647, "rtf_p50": 0.355, "rtf_max": 0.526, "underrun_max": 0.0, "underrun_p95": 0.0, "gapped_pct": 0.0, "audio_per_wall": 159.54}

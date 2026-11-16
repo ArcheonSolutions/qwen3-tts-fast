@@ -1,0 +1,91 @@
+diff --git a/vllm_omni/model_executor/models/qwen3_tts/tokenizer_12hz/streaming_decoder.py b/vllm_omni/model_executor/models/qwen3_tts/tokenizer_12hz/streaming_decoder.py
+index f1594a8..ed3cdd2 100644
+--- a/vllm_omni/model_executor/models/qwen3_tts/tokenizer_12hz/streaming_decoder.py
++++ b/vllm_omni/model_executor/models/qwen3_tts/tokenizer_12hz/streaming_decoder.py
+@@ -161,6 +161,32 @@ def _im2col_kernel(
+         )
+ 
+ 
++def _igemm_configs():
++    tiles = (
++        (64, 64, 64, 4, 4), (64, 64, 32, 4, 3), (64, 128, 128, 8, 3), (128, 64, 64, 8, 4), (64, 128, 64, 4, 3),
++        (128, 128, 64, 8, 3), (128, 128, 32, 8, 3), (128, 64, 32, 4, 3), (128, 32, 32, 4, 3), (64, 32, 32, 4, 3),
++        (256, 32, 32, 8, 3), (128, 128, 32, 4, 3),
++    )  # fmt: skip
++    return [
++        triton.Config({"BM": bm, "BN": bn, "BC": bc}, num_warps=w, num_stages=st) for bm, bn, bc, w, st in tiles
++    ]
++
++
++def _igemm_prune(configs, named_args, **kwargs):
++    args = {**named_args, **kwargs}
++    c, n = args["C"], args["N"]
++    kept = [cfg for cfg in configs if c % cfg.kwargs["BC"] == 0 and cfg.kwargs["BN"] <= max(32, n)]
++    return kept or configs[:1]
++
++
++@triton.autotune(
++    configs=_igemm_configs(),
++    key=["C", "N", "D", "RB"],
++    prune_configs_by={"early_config_prune": _igemm_prune},
++    warmup=5,
++    rep=20,
++    cache_results=True,
++)
+ @triton.jit
+ def _dilated_conv_snake_kernel(
+     ext_ptr,  # [B, H + T, C] transformed rows: history then this call's
+@@ -171,6 +197,7 @@ def _dilated_conv_snake_kernel(
+     ibeta_ptr,
+     T,
+     rows,
++    RB,
+     C: tl.constexpr,
+     N: tl.constexpr,
+     K: tl.constexpr,
+@@ -466,10 +493,7 @@ def _snake_params(module) -> tuple[torch.Tensor, torch.Tensor]:
+     return torch.exp(alpha).contiguous(), (1.0 / (torch.exp(beta) + 1e-9)).contiguous()
+ 
+ 
+-# Dilated unit convs of these widths run as one implicit GEMM (BM, BN, BC, warps)
+-# instead of a K-times patch matrix plus cuBLAS: the patch traffic dominates for
+-# the long, narrow late blocks. The widest block is faster as patch + GEMM.
+-_DILATED_IGEMM = {384: (128, 128, 64, 8), 192: (128, 64, 64, 4), 96: (128, 128, 32, 4)}
++_DILATED_IGEMM = (768, 384, 192, 96)
+ 
+ 
+ class StreamingCodecDecoder(nn.Module):
+@@ -714,12 +738,13 @@ class StreamingCodecDecoder(nn.Module):
+         spec = u["conv1"]
+         ext = self._im2col(x, spec, T, slots, pos, bias=u["pb"], snake=u["act1"], ext=True)
+         rows, c = x.shape
+-        bm, bn, bc, warps = _DILATED_IGEMM[c]
+-        out = torch.empty(rows, spec.weight.shape[1], device=x.device, dtype=self.dtype)
++        n = spec.weight.shape[1]
++        out = torch.empty(rows, n, device=x.device, dtype=self.dtype)
+         alpha, ibeta = u["act2"]
+-        _dilated_conv_snake_kernel[(triton.cdiv(rows, bm), triton.cdiv(out.shape[1], bn))](
+-            ext, spec.weight, out, u["b1"], alpha, ibeta, T, rows,
+-            C=c, N=out.shape[1], K=spec.k, D=spec.d, BM=bm, BN=bn, BC=bc, num_warps=warps, num_stages=3,
++        grid = lambda meta: (triton.cdiv(rows, meta["BM"]), triton.cdiv(n, meta["BN"]))  # noqa: E731
++        _dilated_conv_snake_kernel[grid](
++            ext, spec.weight, out, u["b1"], alpha, ibeta, T, rows, 1 << max((rows - 1).bit_length(), 10),
++            C=c, N=n, K=spec.k, D=spec.d,
+         )  # fmt: skip
+         return out
+ 
+@@ -803,11 +828,11 @@ class StreamingCodecDecoder(nn.Module):
+             x = torch.addmm(blk["b"], col, blk["trans"].weight).view(rows * r, c_out)
+             rows, t_rows = rows * r, t_rows * r
+             for u in blk["units"]:
+-                if u.get("conv1_w4") is not None:
+-                    s2 = self._snake(self._conv_cudnn(x, u, t_rows, slots, pos), u["act2"], u["b1"])
+                 # Below ~16 frames per call the implicit GEMM has too few row tiles to win.
+-                elif self.dilated_igemm and c_out in _DILATED_IGEMM and B * T >= 16:
++                if self.dilated_igemm and c_out in _DILATED_IGEMM and B * T >= 16:
+                     s2 = self._dilated_conv_snake(x, u, t_rows, slots, pos)
++                elif u.get("conv1_w4") is not None:
++                    s2 = self._snake(self._conv_cudnn(x, u, t_rows, slots, pos), u["act2"], u["b1"])
+                 else:
+                     col = self._im2col(x, u["conv1"], t_rows, slots, pos, bias=u["pb"], snake=u["act1"])
+                     s2 = self._snake(torch.mm(col, u["conv1"].weight), u["act2"], u["b1"])

@@ -1,0 +1,6 @@
+== bench/bench_tts.py --levels 8 --rounds 1 --warmup
+{"concurrency": 8, "requests": 8, "ttfa_p50": 0.432, "ttfa_p95": 0.516, "rtf_p50": 0.425, "rtf_max": 0.462, "underrun_max": 0.058, "underrun_p95": 0.058, "gapped_pct": 0.0, "audio_per_wall": 16.26}
+== bench/bench_calls.py --calls 20,24,28 --seconds 90
+{"calls": 20, "turns": 183, "turn_ttfa_p50": 0.176, "turn_ttfa_p95": 0.272, "turn_ttfa_max": 0.377, "gapped_turns_pct": 6.6, "worst_gap": 0.226}
+{"calls": 24, "turns": 219, "turn_ttfa_p50": 0.192, "turn_ttfa_p95": 0.295, "turn_ttfa_max": 0.341, "gapped_turns_pct": 5.9, "worst_gap": 0.175}
+{"calls": 28, "turns": 257, "turn_ttfa_p50": 0.211, "turn_ttfa_p95": 0.346, "turn_ttfa_max": 0.581, "gapped_turns_pct": 24.1, "worst_gap": 0.628}

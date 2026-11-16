@@ -1,0 +1,94 @@
+diff --git a/vllm_omni/model_executor/models/qwen3_tts/tokenizer_12hz/streaming_decoder.py b/vllm_omni/model_executor/models/qwen3_tts/tokenizer_12hz/streaming_decoder.py
+index 600b9e3..f1594a8 100644
+--- a/vllm_omni/model_executor/models/qwen3_tts/tokenizer_12hz/streaming_decoder.py
++++ b/vllm_omni/model_executor/models/qwen3_tts/tokenizer_12hz/streaming_decoder.py
+@@ -383,48 +383,6 @@ def _bias_gelu_kernel(x_ptr, b_ptr, N: tl.constexpr, BN: tl.constexpr):
+     tl.store(x_ptr + row * N + offs, y.to(dt), mask=m)
+ 
+ 
+-@triton.jit
+-def _col2im_kernel(
+-    z_ptr,  # [B * T, 2 * R, C] transposed-conv GEMM rows
+-    bias_ptr,  # [C]
+-    prev_ptr,  # [2, S, R, C] previous call's last GEMM row, second half
+-    slots_ptr,
+-    pos_ptr,
+-    par_ptr,
+-    out_ptr,  # [B * T * R, C]
+-    T,
+-    S,
+-    ROWS,
+-    R: tl.constexpr,
+-    C: tl.constexpr,
+-    BR: tl.constexpr,
+-    BC: tl.constexpr,
+-):
+-    row = tl.program_id(0) * BR + tl.arange(0, BR)  # b * T + t
+-    j = tl.program_id(1)  # 0 .. R - 1
+-    c = tl.program_id(2) * BC + tl.arange(0, BC)
+-    rm = row < ROWS
+-    cm = c < C
+-    m = rm[:, None] & cm[None, :]
+-    b = row // T
+-    t = row % T
+-    slot = tl.load(slots_ptr + b, mask=rm, other=0).to(tl.int64)
+-    live = tl.load(pos_ptr + b, mask=rm, other=0) != 0
+-    par = tl.load(par_ptr + slot, mask=rm, other=0).to(tl.int64)
+-    zr = z_ptr + row.to(tl.int64)[:, None] * 2 * R * C + c[None, :]
+-    cur = tl.load(zr + j * C, mask=m).to(tl.float32)
+-    prev_in = tl.load(zr - 2 * R * C + (R + j) * C, mask=m & (t > 0)[:, None], other=0.0).to(tl.float32)
+-    st = ((par * S + slot) * R + j)[:, None] * C + c[None, :]
+-    prev_st = tl.load(prev_ptr + st, mask=m & ((t == 0) & live)[:, None], other=0.0).to(tl.float32)
+-    y = cur + tl.where((t > 0)[:, None], prev_in, prev_st) + tl.load(bias_ptr + c, mask=cm).to(tl.float32)[None, :]
+-    dt = out_ptr.dtype.element_ty
+-    tl.store(out_ptr + (row.to(tl.int64) * R + j)[:, None] * C + c[None, :], y.to(dt), mask=m)
+-    lm = m & (t == T - 1)[:, None]
+-    last = tl.load(zr + (R + j) * C, mask=lm)
+-    nst = (((1 - par) * S + slot) * R + j)[:, None] * C + c[None, :]
+-    tl.store(prev_ptr + nst, last, mask=lm)
+-
+-
+ @triton.jit
+ def _conv_out_kernel(
+     ext_ptr,  # [B, H + T, C] transformed rows: history then this call's
+@@ -635,15 +593,18 @@ class StreamingCodecDecoder(nn.Module):
+             c_out = trans.conv.out_channels
+             rate = trans.conv.stride[0]
+             tw = f32(trans.conv.weight)  # [C_in, C_out, 2 * rate]
++            w = tw.permute(0, 2, 1).reshape(c_in, 2 * rate * c_out)
++            half = rate * c_out
++            trans_spec = _ConvSpec(cast(torch.cat([w[:, half:], w[:, :half]], 0)), c_in, 2, 1, hist(1, c_in))
+             entry = dict(
+                 pb=cast(pending),
+                 snake=_snake_params(snake),
+                 rate=rate,
+                 c_in=c_in,
+                 c_out=c_out,
+-                w=cast(tw.permute(0, 2, 1).reshape(c_in, 2 * rate * c_out)),
+-                b=cast(f32(trans.conv.bias)),
+-                prev=torch.zeros(2, S, rate, c_out, device=dev, dtype=dtype),
++                trans=trans_spec,
++                b=cast(f32(trans.conv.bias).repeat(rate)),
++                prev=trans_spec.hist,
+                 units=[],
+             )
+             pending = torch.zeros(c_out, device=dev, dtype=torch.float32)
+@@ -837,16 +798,9 @@ class StreamingCodecDecoder(nn.Module):
+ 
+         x = torch.mm(self._im2col(y, self.conv_in, t_rows, slots, pos, bias=self.conv_in_pb), self.conv_in.weight)
+         for blk in self.blocks:
+-            s = self._snake(x, blk["snake"], blk["pb"])
+-            zt = torch.mm(s, blk["w"])  # [rows, 2 * rate * c_out]
+             r, c_out = blk["rate"], blk["c_out"]
+-            x = torch.empty(rows * r, c_out, device=dev, dtype=dt)
+-            bc = min(128, triton.next_power_of_2(c_out))
+-            br = max(1, 2048 // bc)
+-            _col2im_kernel[(triton.cdiv(rows, br), r, triton.cdiv(c_out, bc))](
+-                zt, blk["b"], blk["prev"], slots, pos, self.parity, x, t_rows, self.num_slots, rows,
+-                R=r, C=c_out, BR=br, BC=bc,
+-            )  # fmt: skip
++            col = self._im2col(x, blk["trans"], t_rows, slots, pos, bias=blk["pb"], snake=blk["snake"])
++            x = torch.addmm(blk["b"], col, blk["trans"].weight).view(rows * r, c_out)
+             rows, t_rows = rows * r, t_rows * r
+             for u in blk["units"]:
+                 if u.get("conv1_w4") is not None:

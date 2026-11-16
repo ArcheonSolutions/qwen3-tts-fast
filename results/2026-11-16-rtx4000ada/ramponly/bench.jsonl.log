@@ -1,0 +1,15 @@
+== bench/bench_tts.py --levels 1,16,24,32,64 --rounds 3 --warmup
+{"concurrency": 1, "requests": 3, "ttfa_p50": 0.061, "ttfa_p95": 0.061, "rtf_p50": 0.196, "rtf_max": 0.199, "underrun_max": 0.0, "underrun_p95": 0.0, "gapped_pct": 0.0, "audio_per_wall": 5.1}
+{"concurrency": 16, "requests": 48, "ttfa_p50": 0.122, "ttfa_p95": 0.423, "rtf_p50": 0.289, "rtf_max": 0.365, "underrun_max": 0.0, "underrun_p95": 0.0, "gapped_pct": 0.0, "audio_per_wall": 50.03}
+{"concurrency": 24, "requests": 72, "ttfa_p50": 0.136, "ttfa_p95": 0.569, "rtf_p50": 0.347, "rtf_max": 0.431, "underrun_max": 0.049, "underrun_p95": 0.0, "gapped_pct": 0.0, "audio_per_wall": 62.24}
+{"concurrency": 32, "requests": 96, "ttfa_p50": 0.198, "ttfa_p95": 0.74, "rtf_p50": 0.405, "rtf_max": 0.514, "underrun_max": 0.15, "underrun_p95": 0.047, "gapped_pct": 4.2, "audio_per_wall": 73.13}
+{"concurrency": 64, "requests": 192, "ttfa_p50": 0.284, "ttfa_p95": 1.449, "rtf_p50": 0.616, "rtf_max": 0.905, "underrun_max": 0.631, "underrun_p95": 0.483, "gapped_pct": 45.3, "audio_per_wall": 95.35}
+== bench/bench_calls.py --calls 50,75,100,125,150 --seconds 90
+{"calls": 50, "turns": 462, "turn_ttfa_p50": 0.079, "turn_ttfa_p95": 0.113, "turn_ttfa_max": 0.158, "gapped_turns_pct": 0.0, "worst_gap": 0.031}
+{"calls": 75, "turns": 689, "turn_ttfa_p50": 0.091, "turn_ttfa_p95": 0.138, "turn_ttfa_max": 0.199, "gapped_turns_pct": 0.0, "worst_gap": 0.077}
+{"calls": 100, "turns": 919, "turn_ttfa_p50": 0.102, "turn_ttfa_p95": 0.173, "turn_ttfa_max": 0.25, "gapped_turns_pct": 0.4, "worst_gap": 0.165}
+{"calls": 125, "turns": 1139, "turn_ttfa_p50": 0.133, "turn_ttfa_p95": 0.218, "turn_ttfa_max": 0.288, "gapped_turns_pct": 24.8, "worst_gap": 0.454}
+{"calls": 150, "turns": 1342, "turn_ttfa_p50": 0.176, "turn_ttfa_p95": 0.307, "turn_ttfa_max": 0.635, "gapped_turns_pct": 61.8, "worst_gap": 0.865}
+== bench/bench_calls.py --calls 100,125 --seconds 90 --turn-scale 2
+{"calls": 100, "turns": 610, "turn_ttfa_p50": 0.155, "turn_ttfa_p95": 0.287, "turn_ttfa_max": 0.505, "gapped_turns_pct": 40.2, "worst_gap": 0.67}
+{"calls": 125, "turns": 751, "turn_ttfa_p50": 0.218, "turn_ttfa_p95": 0.402, "turn_ttfa_max": 0.606, "gapped_turns_pct": 87.4, "worst_gap": 0.981}

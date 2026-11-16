@@ -1,0 +1,1 @@
+curl_bytes 49920 seconds 1.04

@@ -1,0 +1,203 @@
+diff --git a/vllm/envs.py b/vllm/envs.py
+index a2b4603..56f5611 100644
+--- a/vllm/envs.py
++++ b/vllm/envs.py
+@@ -92,6 +92,7 @@ if TYPE_CHECKING:
+     VLLM_MAIN_CUDA_VERSION: str = "13.0"
+     VLLM_FLOAT32_MATMUL_PRECISION: Literal["highest", "high", "medium"] = "highest"
+     VLLM_BATCH_INVARIANT: bool = False
++    VLLM_FP8_W8A16_MAX_M: int = 0
+     VLLM_TRITON_USE_TD: bool | None = None
+     VLLM_GPU_SYNC_CHECK: Literal["warn", "error"] | None = None
+     MAX_JOBS: str | None = None
+@@ -634,6 +635,7 @@ environment_variables: dict[str, Callable[[], Any]] = {
+     # Enable batch-invariant mode: deterministic results regardless of
+     # batch composition. Requires NVIDIA GPU with compute capability >= 9.0.
+     "VLLM_BATCH_INVARIANT": lambda: bool(int(os.getenv("VLLM_BATCH_INVARIANT", "0"))),
++    "VLLM_FP8_W8A16_MAX_M": lambda: int(os.getenv("VLLM_FP8_W8A16_MAX_M", "0")),
+     "VLLM_REPLICATE_EMBED": lambda: (
+         os.getenv("VLLM_REPLICATE_EMBED", "0").strip().lower() in ("1", "true")
+     ),
+diff --git a/vllm/model_executor/layers/quantization/online/fp8.py b/vllm/model_executor/layers/quantization/online/fp8.py
+index 8d8a7ec..9951c5c 100644
+--- a/vllm/model_executor/layers/quantization/online/fp8.py
++++ b/vllm/model_executor/layers/quantization/online/fp8.py
+@@ -268,6 +268,19 @@ class Fp8PerTensorOnlineLinearMethod(OnlineLinearBase):
+         if self.use_marlin and hasattr(self.fp8_linear, "marlin_input_dtype"):
+             self.fp8_linear.marlin_input_dtype = self.marlin_input_dtype
+         self.fp8_linear.process_weights_after_loading(layer)
++        layer._w8a16 = False
++        max_m = envs.VLLM_FP8_W8A16_MAX_M
++        if (
++            max_m > 0
++            and not self.use_marlin
++            and self.out_dtype == torch.bfloat16
++            and layer.weight_scale.numel() == 1
++            and layer.weight.t().is_contiguous()
++        ):
++            from vllm.model_executor.layers.quantization.utils.w8a16_triton import tune_w8a16
++
++            tune_w8a16(layer.weight, layer.weight_scale, max_m, self.out_dtype)
++            layer._w8a16 = True
+ 
+         # Prevent duplicate processing (e.g., during weight reload)
+         layer._already_called_process_weights_after_loading = True
+@@ -278,6 +291,15 @@ class Fp8PerTensorOnlineLinearMethod(OnlineLinearBase):
+         x: torch.Tensor,
+         bias: torch.Tensor | None = None,
+     ) -> torch.Tensor:
++        if (
++            getattr(layer, "_w8a16", False)
++            and bias is None
++            and isinstance(x, torch.Tensor)
++            and x.dtype == torch.bfloat16
++            and not envs.VLLM_BATCH_INVARIANT
++        ):
++            out = torch.ops.vllm.fp8_w8a16_linear(x.reshape(-1, x.shape[-1]), layer.weight, layer.weight_scale)
++            return out.reshape(*x.shape[:-1], out.shape[-1])
+         # if batch invariant mode is enabled, use BF16 dequant
+         if envs.VLLM_BATCH_INVARIANT:
+             if fp8_scaled_mm_is_batch_invariant(self.fp8_linear):
+diff --git a/vllm/model_executor/layers/quantization/utils/w8a16_triton.py b/vllm/model_executor/layers/quantization/utils/w8a16_triton.py
+new file mode 100644
+index 0000000..03b6f91
+--- /dev/null
++++ b/vllm/model_executor/layers/quantization/utils/w8a16_triton.py
+@@ -0,0 +1,137 @@
++# SPDX-License-Identifier: Apache-2.0
++# SPDX-FileCopyrightText: Copyright contributors to the vLLM project
++# ruff: noqa: N803
++
++import torch
++
++from vllm import _custom_ops as ops
++from vllm.triton_utils import tl, triton
++from vllm.utils.torch_utils import direct_register_custom_op
++
++_BUCKETS = (16, 32, 64, 128, 256, 512)
++_CANDIDATES = (
++    (64, 128, 1), (64, 256, 1), (128, 128, 1), (128, 256, 1), (64, 128, 2), (128, 128, 2), (64, 256, 2), (32, 256, 1),
++)  # fmt: skip
++_CONFIGS: dict[tuple[int, int, int], tuple | None] = {}
++_WORKSPACE: dict[torch.device, tuple[torch.Tensor, torch.Tensor]] = {}
++_WS_ROWS = 512
++_WS_COLS = 32768
++
++
++@triton.jit
++def _w8a16_kernel(
++    a_ptr, w_ptr, s_ptr, ws_ptr, cnt_ptr, out_ptr, M,
++    K: tl.constexpr, N: tl.constexpr, RMAX: tl.constexpr,
++    BN: tl.constexpr, BK: tl.constexpr, SK: tl.constexpr, BM: tl.constexpr, STAGES: tl.constexpr,
++):  # fmt: skip
++    pid_n = tl.program_id(0)
++    pid_k = tl.program_id(1)
++    pid_m = tl.program_id(2)
++    KS: tl.constexpr = K // SK
++    n = pid_n * BN + tl.arange(0, BN)
++    nm = n < N
++    kb = pid_k * KS
++    m = pid_m * BM + tl.arange(0, BM)
++    rmask = m < M
++    kk = tl.arange(0, BK)
++    acc = tl.zeros([BN, BM], dtype=tl.float32)
++    for k0 in tl.range(kb, kb + KS, BK, num_stages=STAGES):
++        w = tl.load(w_ptr + n[:, None].to(tl.int64) * K + (k0 + kk)[None, :], mask=nm[:, None], other=0.0)
++        a = tl.load(a_ptr + m[:, None].to(tl.int64) * K + (k0 + kk)[None, :], mask=rmask[:, None], other=0.0)
++        acc = tl.dot(w.to(tl.bfloat16), tl.trans(a), acc)
++    acc = acc * tl.load(s_ptr)
++    om = rmask[None, :] & nm[:, None]
++    optr = out_ptr + m[None, :].to(tl.int64) * N + n[:, None]
++    if SK == 1:
++        tl.store(optr, acc.to(out_ptr.dtype.element_ty), mask=om)
++    else:
++        wsp = ws_ptr + m[None, :] * N + n[:, None]
++        tl.store(wsp + pid_k * RMAX * N, acc, mask=om)
++        tl.debug_barrier()
++        cnt = cnt_ptr + pid_n * tl.num_programs(2) + pid_m
++        if tl.atomic_add(cnt, 1, sem="acq_rel", scope="gpu") == SK - 1:
++            total = tl.zeros([BN, BM], dtype=tl.float32)
++            for s in tl.static_range(SK):
++                total += tl.load(wsp + s * RMAX * N, mask=om, other=0.0, cache_modifier=".cg")
++            tl.store(optr, total.to(out_ptr.dtype.element_ty), mask=om)
++            tl.atomic_xchg(cnt, 0)
++
++
++def _bucket(m: int) -> int:
++    return next((b for b in _BUCKETS if m <= b), 0)
++
++
++def _workspace(device: torch.device) -> tuple[torch.Tensor, torch.Tensor]:
++    ws = _WORKSPACE.get(device)
++    if ws is None:
++        ws = (
++            torch.empty(2 * _WS_ROWS * _WS_COLS, device=device, dtype=torch.float32),
++            torch.zeros(65536, device=device, dtype=torch.int32),
++        )
++        _WORKSPACE[device] = ws
++    return ws
++
++
++def _launch(x: torch.Tensor, w_nk: torch.Tensor, scale: torch.Tensor, out: torch.Tensor, cfg: tuple) -> None:
++    M, K = x.shape
++    N = w_nk.shape[0]
++    bn, bk, sk = cfg
++    bm = 16 if M <= 16 else (32 if M <= 128 else 64)
++    ws, cnt = _workspace(x.device)
++    _w8a16_kernel[(triton.cdiv(N, bn), sk, triton.cdiv(M, bm))](
++        x, w_nk, scale, ws, cnt, out, M, K=K, N=N, RMAX=_WS_ROWS, BN=bn, BK=bk, SK=sk, BM=bm, STAGES=3,
++        num_warps=4 if bm * bn <= 64 * 64 else 8,
++    )  # fmt: skip
++
++
++def _fp8_reference(x: torch.Tensor, w_kn: torch.Tensor, scale: torch.Tensor) -> torch.Tensor:
++    x_q, x_s = ops.scaled_fp8_quant(x, None, use_per_token_if_dynamic=True)
++    return ops.cutlass_scaled_mm(x_q, w_kn, scale_a=x_s, scale_b=scale, out_dtype=x.dtype)
++
++
++def tune_w8a16(w_kn: torch.Tensor, scale: torch.Tensor, max_m: int, dtype: torch.dtype) -> None:
++    from triton.testing import do_bench
++
++    K, N = w_kn.shape
++    w_nk = w_kn.t()
++    if not w_nk.is_contiguous() or K % 512 or N % 64:
++        return
++    for bucket in _BUCKETS:
++        key = (N, K, bucket)
++        if bucket > max_m or key in _CONFIGS:
++            continue
++        x = torch.randn(bucket, K, device=w_kn.device, dtype=dtype)
++        out = torch.empty(bucket, N, device=w_kn.device, dtype=dtype)
++        best = (do_bench(lambda: _fp8_reference(x, w_kn, scale), warmup=5, rep=20), None)
++        for cfg in _CANDIDATES:
++            if K % (cfg[1] * cfg[2]) or N > _WS_COLS:
++                continue
++            try:
++                _launch(x, w_nk, scale, out, cfg)
++                t = do_bench(lambda cfg=cfg: _launch(x, w_nk, scale, out, cfg), warmup=5, rep=20)
++            except Exception:
++                continue
++            if t < best[0]:
++                best = (t, cfg)
++        _CONFIGS[key] = best[1]
++
++
++def _fp8_w8a16_linear(x: torch.Tensor, w_kn: torch.Tensor, scale: torch.Tensor) -> torch.Tensor:
++    K, N = w_kn.shape
++    cfg = _CONFIGS.get((N, K, _bucket(x.shape[0])))
++    if cfg is None or x.dtype != torch.bfloat16:
++        return _fp8_reference(x, w_kn, scale)
++    out = torch.empty(x.shape[0], N, device=x.device, dtype=x.dtype)
++    _launch(x.contiguous(), w_kn.t(), scale, out, cfg)
++    return out
++
++
++def _fp8_w8a16_linear_fake(x: torch.Tensor, w_kn: torch.Tensor, scale: torch.Tensor) -> torch.Tensor:
++    return torch.empty(x.shape[0], w_kn.shape[1], device=x.device, dtype=x.dtype)
++
++
++direct_register_custom_op(
++    op_name="fp8_w8a16_linear",
++    op_func=_fp8_w8a16_linear,
++    fake_impl=_fp8_w8a16_linear_fake,
++)

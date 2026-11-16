@@ -1,0 +1,13 @@
+== bench/bench_tts.py --levels 1,4,8,12,16,24 --rounds 3 --warmup
+{"concurrency": 1, "requests": 3, "ttfa_p50": 0.117, "ttfa_p95": 0.117, "rtf_p50": 0.267, "rtf_max": 0.271, "underrun_max": 0.0, "underrun_p95": 0.0, "gapped_pct": 0.0, "audio_per_wall": 3.74}
+{"concurrency": 4, "requests": 12, "ttfa_p50": 0.18, "ttfa_p95": 0.3, "rtf_p50": 0.35, "rtf_max": 0.367, "underrun_max": 0.0, "underrun_p95": 0.0, "gapped_pct": 0.0, "audio_per_wall": 11.05}
+{"concurrency": 8, "requests": 24, "ttfa_p50": 0.257, "ttfa_p95": 0.503, "rtf_p50": 0.44, "rtf_max": 0.462, "underrun_max": 0.053, "underrun_p95": 0.0, "gapped_pct": 0.0, "audio_per_wall": 16.86}
+{"concurrency": 12, "requests": 36, "ttfa_p50": 0.363, "ttfa_p95": 0.75, "rtf_p50": 0.579, "rtf_max": 0.609, "underrun_max": 0.271, "underrun_p95": 0.184, "gapped_pct": 5.6, "audio_per_wall": 19.9}
+{"concurrency": 16, "requests": 48, "ttfa_p50": 0.414, "ttfa_p95": 0.998, "rtf_p50": 0.662, "rtf_max": 0.719, "underrun_max": 0.518, "underrun_p95": 0.373, "gapped_pct": 33.3, "audio_per_wall": 23.63}
+{"concurrency": 24, "requests": 72, "ttfa_p50": 0.586, "ttfa_p95": 1.522, "rtf_p50": 0.915, "rtf_max": 1.005, "underrun_max": 1.095, "underrun_p95": 0.941, "gapped_pct": 70.8, "audio_per_wall": 25.53}
+== bench/bench_calls.py --calls 4,8,16,32,50 --seconds 90
+{"calls": 4, "turns": 38, "turn_ttfa_p50": 0.121, "turn_ttfa_p95": 0.185, "turn_ttfa_max": 0.187, "gapped_turns_pct": 0.0, "worst_gap": 0.051}
+{"calls": 8, "turns": 75, "turn_ttfa_p50": 0.12, "turn_ttfa_p95": 0.18, "turn_ttfa_max": 0.241, "gapped_turns_pct": 0.0, "worst_gap": 0.035}
+{"calls": 16, "turns": 148, "turn_ttfa_p50": 0.165, "turn_ttfa_p95": 0.232, "turn_ttfa_max": 0.277, "gapped_turns_pct": 0.0, "worst_gap": 0.083}
+{"calls": 32, "turns": 290, "turn_ttfa_p50": 0.242, "turn_ttfa_p95": 0.367, "turn_ttfa_max": 0.61, "gapped_turns_pct": 45.2, "worst_gap": 0.44}
+{"calls": 50, "turns": 401, "turn_ttfa_p50": 0.587, "turn_ttfa_p95": 1.105, "turn_ttfa_max": 1.461, "gapped_turns_pct": 90.3, "worst_gap": 2.009}

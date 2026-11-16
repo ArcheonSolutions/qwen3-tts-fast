@@ -1,0 +1,8 @@
+== bench/bench_tts.py --levels 64 --rounds 1 --warmup
+{"concurrency": 64, "requests": 64, "ttfa_p50": 0.369, "ttfa_p95": 0.549, "rtf_p50": 0.389, "rtf_max": 0.464, "underrun_max": 0.0, "underrun_p95": 0.0, "gapped_pct": 0.0, "audio_per_wall": 139.02}
+== bench/bench_calls.py --calls 250,300,400 --seconds 90
+{"calls": 250, "turns": 2315, "turn_ttfa_p50": 0.076, "turn_ttfa_p95": 0.112, "turn_ttfa_max": 0.149, "gapped_turns_pct": 0.0, "worst_gap": 0.0}
+{"calls": 300, "turns": 2764, "turn_ttfa_p50": 0.107, "turn_ttfa_p95": 0.165, "turn_ttfa_max": 0.286, "gapped_turns_pct": 0.0, "worst_gap": 0.036}
+{"calls": 400, "turns": 3229, "turn_ttfa_p50": 1.823, "turn_ttfa_p95": 2.216, "turn_ttfa_max": 2.362, "gapped_turns_pct": 0.0, "worst_gap": 0.093}
+== bench/bench_quality.py --repeats 12 --concurrency 12 --out /root/results/patched_more/quality
+{"out": "/root/results/patched_more/quality", "clips": 144, "cer_mean": 0.0, "cer_median": 0.0, "cer_max": 0.0, "bad_clips": 0, "seconds_mean": 4.1}
