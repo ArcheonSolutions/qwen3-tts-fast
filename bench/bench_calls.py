@@ -31,12 +31,16 @@ class Clause:
     async def _run(self, session, url, voice, text):
         payload = {'input': text, 'voice': voice, 'task_type': 'Base', 'language': 'French',
                    'response_format': 'pcm', 'stream_format': 'audio'}
+        self.failed = False
         try:
             async with session.post(f'{url}/v1/audio/speech', json=payload,
                                     timeout=aiohttp.ClientTimeout(total=60)) as response:
                 response.raise_for_status()
                 async for data in response.content.iter_any():
                     self.chunks.put_nowait((time.perf_counter(), len(data)/2/RATE))
+        except aiohttp.ClientError:
+            # The server ends a stream early on errors (e.g. the codec length budget).
+            self.failed = True
         finally:
             self.chunks.put_nowait(None)
 
@@ -67,6 +71,7 @@ async def call(session, url, voice, seconds, stats, gap_threshold, start_delay):
                     playhead = arrived
                 playhead += duration
             await current.task
+            stats['failed_clauses'] += current.failed
         stats['turns'] += 1
         stats['gapped'] += worst_gap > gap_threshold
         stats['worst_gap'] = max(stats['worst_gap'], worst_gap)
@@ -88,12 +93,12 @@ async def main():
     random.seed(7)
     async with aiohttp.ClientSession(connector=aiohttp.TCPConnector(limit=0, keepalive_timeout=2)) as session:
         for calls in (int(n) for n in args.calls.split(',')):
-            stats = {'turn_ttfa': [], 'turns': 0, 'gapped': 0, 'worst_gap': 0.}
+            stats = {'turn_ttfa': [], 'turns': 0, 'gapped': 0, 'worst_gap': 0., 'failed_clauses': 0}
             ramp = min(20., args.seconds/3)
             await asyncio.gather(*(call(session, args.url, args.voice, args.seconds, stats, args.gap, random.uniform(0, ramp))
                                    for _ in range(calls)))
             ttfa = sorted(stats['turn_ttfa'])
-            print(json.dumps({'calls': calls, 'turns': stats['turns'],
+            print(json.dumps({'calls': calls, 'turns': stats['turns'], 'failed_clauses': stats['failed_clauses'],
                               'turn_ttfa_p50': round(statistics.median(ttfa), 3),
                               'turn_ttfa_p95': round(ttfa[int(len(ttfa)*.95)], 3),
                               'turn_ttfa_max': round(ttfa[-1], 3),

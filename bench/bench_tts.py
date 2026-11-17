@@ -30,18 +30,24 @@ async def stream(session, url, voice, language, text, buffer_seconds):
     first = None
     received = 0
     underrun = 0.
-    async with session.post(f'{url}/v1/audio/speech', json=payload,
-                            timeout=aiohttp.ClientTimeout(total=120)) as response:
-        response.raise_for_status()
-        async for data in response.content.iter_any():
-            now = time.perf_counter()
-            if first is None:
-                first = now
-            played = max(0., now-first-buffer_seconds)
-            have = received/2/RATE
-            if have < played:
-                underrun = max(underrun, played-have)
-            received += len(data)
+    try:
+        async with session.post(f'{url}/v1/audio/speech', json=payload,
+                                timeout=aiohttp.ClientTimeout(total=120)) as response:
+            response.raise_for_status()
+            async for data in response.content.iter_any():
+                now = time.perf_counter()
+                if first is None:
+                    first = now
+                played = max(0., now-first-buffer_seconds)
+                have = received/2/RATE
+                if have < played:
+                    underrun = max(underrun, played-have)
+                received += len(data)
+    except aiohttp.ClientError:
+        # The server ends a stream early on errors (e.g. the codec length budget).
+        return {'failed': True}
+    if first is None:
+        return {'failed': True}
     done = time.perf_counter()
     audio = received/2/RATE
     return {'ttfa': first-started, 'total': done-started, 'audio': audio,
@@ -62,9 +68,11 @@ async def level(url, voice, language, concurrency, rounds, buffer_seconds):
 
         await asyncio.gather(*(worker(i) for i in range(concurrency)))
         wall = time.perf_counter()-wall
+    failed = sum('failed' in r for r in results)
+    results = [r for r in results if 'failed' not in r]
     ttfa = sorted(r['ttfa'] for r in results)
     rtf = [r['rtf'] for r in results]
-    return {'concurrency': concurrency, 'requests': len(results),
+    return {'concurrency': concurrency, 'requests': len(results), 'failed': failed,
             'ttfa_p50': round(statistics.median(ttfa), 3),
             'ttfa_p95': round(ttfa[min(len(ttfa)-1, int(len(ttfa)*.95))], 3),
             'rtf_p50': round(statistics.median(rtf), 3), 'rtf_max': round(max(rtf), 3),

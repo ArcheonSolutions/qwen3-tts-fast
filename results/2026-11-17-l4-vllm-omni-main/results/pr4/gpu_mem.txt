@@ -1,0 +1,4 @@
+name, memory.used [MiB]
+NVIDIA L4, 15778 MiB
+name, memory.used [MiB]
+NVIDIA L4, 17848 MiB

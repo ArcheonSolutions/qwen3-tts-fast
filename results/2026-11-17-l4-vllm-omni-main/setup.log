@@ -1,0 +1,39 @@
++ export DEBIAN_FRONTEND=noninteractive
++ DEBIAN_FRONTEND=noninteractive
++ apt-get update -qq
+W: https://developer.download.nvidia.com/compute/cuda/repos/ubuntu2404/x86_64/InRelease: Key is stored in legacy trusted.gpg keyring (/etc/apt/trusted.gpg), see the DEPRECATION section in apt-key(8) for details.
++ apt-get install -y -qq git jq ffmpeg curl
++ pip install -q --break-system-packages uv
+WARNING: Running pip as the 'root' user can result in broken permissions and conflicting behaviour with the system package manager, possibly rendering your system unusable. It is recommended to use a virtual environment instead: https://pip.pypa.io/warnings/venv. Use the --root-user-action option if you know what you are doing and want to suppress this warning.
++ export PATH=/root/.local/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin
++ PATH=/root/.local/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin
++ cd /root
++ git clone -q /root/omni.bundle vllm-omni
+warning: remote HEAD refers to nonexistent ref, unable to checkout
++ cd vllm-omni
++ git checkout -q main
++ uv venv -q -p 3.12 /opt/omni
++ VLLM_COMMIT=4ba787ec9959e566d3b587a796dff07673324da5
++ uv pip install -q -p /opt/omni/bin/python nvidia-nccl-cu13==2.30.7 'vllm @ https://wheels.vllm.ai/4ba787ec9959e566d3b587a796dff07673324da5/vllm-0.33.0-cp38-abi3-manylinux_2_28_x86_64.whl' -e . pytest pytest-xdist pytest-asyncio
++ uv venv -q -p 3.12 /opt/bench
++ uv pip install -q -p /opt/bench/bin/python aiohttp requests numpy soundfile scipy faster-whisper speechbrain torch torchaudio
++ /opt/omni/bin/python -c 'from huggingface_hub import snapshot_download; print(snapshot_download('\''Qwen/Qwen3-TTS-12Hz-1.7B-Base'\''))'
+Fetching 13 files:   0%|          | 0/13 [00:00<?, ?it/s]Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+Fetching 13 files:   8%|▊         | 1/13 [00:00<00:02,  5.23it/s]Fetching 13 files:  54%|█████▍    | 7/13 [00:00<00:00, 20.63it/s]Fetching 13 files:  85%|████████▍ | 11/13 [00:00<00:00, 19.05it/s]Fetching 13 files:  92%|█████████▏| 12/13 [00:19<00:00, 19.05it/s]Fetching 13 files: 100%|██████████| 13/13 [00:20<00:00,  2.46s/it]Fetching 13 files: 100%|██████████| 13/13 [00:20<00:00,  1.55s/it]
++ mkdir -p /root/voice
++ curl -sL -o /root/voice/clone_2.wav https://qianwen-res.oss-cn-beijing.aliyuncs.com/Qwen3-TTS-Repo/clone_2.wav
++ sha256sum /root/voice/clone_2.wav
+480f55f41c71c3d79c2a9acc48f0bfb3c5a46222e6e9ebf3e2888e93501a6b5c  /root/voice/clone_2.wav
++ /opt/omni/bin/python -c 'import vllm, vllm_omni, torch; print(vllm.__version__, torch.__version__, torch.cuda.get_device_name())'
+/root/vllm-omni/vllm_omni/version.py:55: RuntimeWarning: vLLM and vLLM-Omni appear to have mismatched major/minor versions:
+ --> vLLM-Omni version 0.1.dev4383+g174d2216c
+ --> vLLM version 0.33.0
+This will likely cause compatibility issues.
+  warn_if_misaligned_vllm_version()
+W1116 20:37:43.573000 1129 torch/_opaque_base.py:6] torch._opaque_base is deprecated, use torch._custom_class_base instead
+W1116 20:37:43.574000 1129 torch/_library/opaque_object.py:288] register_opaque_type is deprecated, use register_custom_class instead
+W1116 20:37:43.574000 1129 torch/_library/opaque_object.py:211] typ='value' is deprecated, use typ='constant' instead
+FlashInfer kernels are disabled: flashinfer-cubin is not installed and nvcc (CUDA_HOME, CUDA_PATH, PATH or /usr/local/cuda) or ninja (PATH) is missing. Set CUDA_HOME to a CUDA toolkit and put ninja on PATH, or run `vllm download-kernels`.
+0.33.0 2.14.0+cu130 NVIDIA L4
++ echo SETUP_DONE
+SETUP_DONE

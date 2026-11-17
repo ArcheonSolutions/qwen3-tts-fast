@@ -1,0 +1,51 @@
+== bench/bench_tts.py --levels 1,8,16,32 --rounds 3 --warmup
+Traceback (most recent call last):
+  File "/opt/bench/lib/python3.12/site-packages/aiohttp/client_proto.py", line 145, in connection_lost
+    uncompleted = self._parser.feed_eof()
+                  ^^^^^^^^^^^^^^^^^^^^^^^
+  File "aiohttp/_http_parser.pyx", line 620, in aiohttp._http_parser.HttpParser.feed_eof
+aiohttp.http_exceptions.TransferEncodingError: 400, message:
+  Not enough data to satisfy transfer length header.
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/root/kit/bench/bench_tts.py", line 96, in <module>
+    asyncio.run(main())
+  File "/usr/lib/python3.12/asyncio/runners.py", line 194, in run
+    return runner.run(main)
+           ^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/asyncio/runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/asyncio/base_events.py", line 687, in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+  File "/root/kit/bench/bench_tts.py", line 89, in main
+    await level(args.url, args.voice, args.language, concurrency, 1, args.buffer)
+  File "/root/kit/bench/bench_tts.py", line 63, in level
+    await asyncio.gather(*(worker(i) for i in range(concurrency)))
+  File "/root/kit/bench/bench_tts.py", line 60, in worker
+    results.append(await stream(session, url, voice, language,
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/kit/bench/bench_tts.py", line 36, in stream
+    async for data in response.content.iter_any():
+  File "/opt/bench/lib/python3.12/site-packages/aiohttp/streams.py", line 46, in __anext__
+    rv = await self.read_func()
+         ^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/bench/lib/python3.12/site-packages/aiohttp/streams.py", line 471, in readany
+    await self._wait("readany")
+  File "/opt/bench/lib/python3.12/site-packages/aiohttp/streams.py", line 365, in _wait
+    await waiter
+aiohttp.client_exceptions.ClientPayloadError: Response payload is not completed: <TransferEncodingError: 400, message='Not enough data to satisfy transfer length header.'>
+== bench/bench_calls.py --calls 8,16,32 --seconds 60
+{"calls": 8, "turns": 47, "turn_ttfa_p50": 0.077, "turn_ttfa_p95": 0.112, "turn_ttfa_max": 0.12, "gapped_turns_pct": 100.0, "worst_gap": 0.667}
+{"calls": 16, "turns": 92, "turn_ttfa_p50": 0.102, "turn_ttfa_p95": 0.128, "turn_ttfa_max": 0.144, "gapped_turns_pct": 100.0, "worst_gap": 0.752}
+{"calls": 32, "turns": 189, "turn_ttfa_p50": 0.11, "turn_ttfa_p95": 0.142, "turn_ttfa_max": 0.163, "gapped_turns_pct": 100.0, "worst_gap": 0.909}
+== bench/bench_quality.py --repeats 4 --out /root/results/main/quality
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+{"out": "/root/results/main/quality", "clips": 48, "cer_mean": 0.0204, "cer_median": 0.0, "cer_max": 0.167, "bad_clips": 1, "seconds_mean": 4.04}
+== bench/bench_similarity.py /root/voice/clone_2.wav /root/results/main/quality
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+Could not parse CUDA device string 'cuda': not enough values to unpack (expected 2, got 1). Falling back to device 0.
+{"dir": "/root/results/main/quality", "clips": 48, "similarity_mean": 0.6525, "similarity_min": 0.4567}

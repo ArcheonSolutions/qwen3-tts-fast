@@ -1,0 +1,115 @@
+== bench/bench_tts.py --levels 1,16,32,64 --rounds 3 --warmup
+Traceback (most recent call last):
+  File "/opt/bench/lib/python3.12/site-packages/aiohttp/client_proto.py", line 145, in connection_lost
+    uncompleted = self._parser.feed_eof()
+                  ^^^^^^^^^^^^^^^^^^^^^^^
+  File "aiohttp/_http_parser.pyx", line 620, in aiohttp._http_parser.HttpParser.feed_eof
+aiohttp.http_exceptions.TransferEncodingError: 400, message:
+  Not enough data to satisfy transfer length header.
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/root/kit/bench/bench_tts.py", line 96, in <module>
+    asyncio.run(main())
+  File "/usr/lib/python3.12/asyncio/runners.py", line 194, in run
+    return runner.run(main)
+           ^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/asyncio/runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/asyncio/base_events.py", line 687, in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+  File "/root/kit/bench/bench_tts.py", line 89, in main
+    await level(args.url, args.voice, args.language, concurrency, 1, args.buffer)
+  File "/root/kit/bench/bench_tts.py", line 63, in level
+    await asyncio.gather(*(worker(i) for i in range(concurrency)))
+  File "/root/kit/bench/bench_tts.py", line 60, in worker
+    results.append(await stream(session, url, voice, language,
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/kit/bench/bench_tts.py", line 36, in stream
+    async for data in response.content.iter_any():
+  File "/opt/bench/lib/python3.12/site-packages/aiohttp/streams.py", line 46, in __anext__
+    rv = await self.read_func()
+         ^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/bench/lib/python3.12/site-packages/aiohttp/streams.py", line 471, in readany
+    await self._wait("readany")
+  File "/opt/bench/lib/python3.12/site-packages/aiohttp/streams.py", line 365, in _wait
+    await waiter
+aiohttp.client_exceptions.ClientPayloadError: Response payload is not completed: <TransferEncodingError: 400, message='Not enough data to satisfy transfer length header.'>
+== bench/bench_calls.py --calls 100,150,200,250,300 --seconds 60
+Traceback (most recent call last):
+  File "/opt/bench/lib/python3.12/site-packages/aiohttp/client_proto.py", line 145, in connection_lost
+    uncompleted = self._parser.feed_eof()
+                  ^^^^^^^^^^^^^^^^^^^^^^^
+  File "aiohttp/_http_parser.pyx", line 620, in aiohttp._http_parser.HttpParser.feed_eof
+aiohttp.http_exceptions.TransferEncodingError: 400, message:
+  Not enough data to satisfy transfer length header.
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/root/kit/bench/bench_calls.py", line 105, in <module>
+    asyncio.run(main())
+  File "/usr/lib/python3.12/asyncio/runners.py", line 194, in run
+    return runner.run(main)
+           ^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/asyncio/runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/asyncio/base_events.py", line 687, in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+  File "/root/kit/bench/bench_calls.py", line 93, in main
+    await asyncio.gather(*(call(session, args.url, args.voice, args.seconds, stats, args.gap, random.uniform(0, ramp))
+  File "/root/kit/bench/bench_calls.py", line 69, in call
+    await current.task
+  File "/root/kit/bench/bench_calls.py", line 38, in _run
+    async for data in response.content.iter_any():
+  File "/opt/bench/lib/python3.12/site-packages/aiohttp/streams.py", line 46, in __anext__
+    rv = await self.read_func()
+         ^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/bench/lib/python3.12/site-packages/aiohttp/streams.py", line 471, in readany
+    await self._wait("readany")
+  File "/opt/bench/lib/python3.12/site-packages/aiohttp/streams.py", line 365, in _wait
+    await waiter
+aiohttp.client_exceptions.ClientPayloadError: Response payload is not completed: <TransferEncodingError: 400, message='Not enough data to satisfy transfer length header.'>
+Task exception was never retrieved
+future: <Task finished name='Task-1264' coro=<Clause._run() done, defined at /root/kit/bench/bench_calls.py:31> exception=ServerDisconnectedError('Server disconnected')>
+Traceback (most recent call last):
+  File "/root/kit/bench/bench_calls.py", line 35, in _run
+    async with session.post(f'{url}/v1/audio/speech', json=payload,
+  File "/opt/bench/lib/python3.12/site-packages/aiohttp/client.py", line 1756, in __aenter__
+    self._resp: _RetType_co = await self._coro
+                              ^^^^^^^^^^^^^^^^
+  File "/opt/bench/lib/python3.12/site-packages/aiohttp/client.py", line 900, in _request
+    resp = await handler(req)
+           ^^^^^^^^^^^^^^^^^^
+  File "/opt/bench/lib/python3.12/site-packages/aiohttp/client.py", line 878, in _connect_and_send_request
+    await resp.start(conn)
+  File "/opt/bench/lib/python3.12/site-packages/aiohttp/client_reqrep.py", line 745, in start
+    message, payload = await protocol.read()  # type: ignore[union-attr]
+                       ^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/bench/lib/python3.12/site-packages/aiohttp/streams.py", line 716, in read
+    await self._waiter
+aiohttp.client_exceptions.ServerDisconnectedError: Server disconnected
+Task exception was never retrieved
+future: <Task finished name='Task-1266' coro=<Clause._run() done, defined at /root/kit/bench/bench_calls.py:31> exception=ServerDisconnectedError('Server disconnected')>
+Traceback (most recent call last):
+  File "/root/kit/bench/bench_calls.py", line 35, in _run
+    async with session.post(f'{url}/v1/audio/speech', json=payload,
+  File "/opt/bench/lib/python3.12/site-packages/aiohttp/client.py", line 1756, in __aenter__
+    self._resp: _RetType_co = await self._coro
+                              ^^^^^^^^^^^^^^^^
+  File "/opt/bench/lib/python3.12/site-packages/aiohttp/client.py", line 900, in _request
+    resp = await handler(req)
+           ^^^^^^^^^^^^^^^^^^
+  File "/opt/bench/lib/python3.12/site-packages/aiohttp/client.py", line 878, in _connect_and_send_request
+    await resp.start(conn)
+  File "/opt/bench/lib/python3.12/site-packages/aiohttp/client_reqrep.py", line 745, in start
+    message, payload = await protocol.read()  # type: ignore[union-attr]
+                       ^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/bench/lib/python3.12/site-packages/aiohttp/streams.py", line 716, in read
+    await self._waiter
+aiohttp.client_exceptions.ServerDisconnectedError: Server disconnected

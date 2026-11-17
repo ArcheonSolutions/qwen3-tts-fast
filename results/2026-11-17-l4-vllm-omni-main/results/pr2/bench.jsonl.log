@@ -1,0 +1,10 @@
+== bench/bench_tts.py --levels 1,16,32,64 --rounds 3 --warmup
+{"concurrency": 1, "requests": 3, "failed": 0, "ttfa_p50": 0.06, "ttfa_p95": 0.07, "rtf_p50": 0.323, "rtf_max": 0.33, "underrun_max": 0.0, "underrun_p95": 0.0, "gapped_pct": 0.0, "audio_per_wall": 3.09}
+{"concurrency": 16, "requests": 47, "failed": 1, "ttfa_p50": 0.103, "ttfa_p95": 0.223, "rtf_p50": 0.411, "rtf_max": 0.464, "underrun_max": 0.0, "underrun_p95": 0.0, "gapped_pct": 0.0, "audio_per_wall": 17.61}
+{"concurrency": 32, "requests": 96, "failed": 0, "ttfa_p50": 0.128, "ttfa_p95": 0.398, "rtf_p50": 0.486, "rtf_max": 0.573, "underrun_max": 0.0, "underrun_p95": 0.0, "gapped_pct": 0.0, "audio_per_wall": 59.71}
+{"concurrency": 64, "requests": 189, "failed": 3, "ttfa_p50": 0.182, "ttfa_p95": 0.869, "rtf_p50": 0.659, "rtf_max": 0.88, "underrun_max": 0.254, "underrun_p95": 0.219, "gapped_pct": 24.9, "audio_per_wall": 52.6}
+== bench/bench_calls.py --calls 75,100,150,200 --seconds 60
+{"calls": 75, "turns": 458, "failed_clauses": 2, "turn_ttfa_p50": 0.095, "turn_ttfa_p95": 0.121, "turn_ttfa_max": 0.133, "gapped_turns_pct": 0.0, "worst_gap": 0.017}
+{"calls": 100, "turns": 603, "failed_clauses": 2, "turn_ttfa_p50": 0.104, "turn_ttfa_p95": 0.132, "turn_ttfa_max": 0.16, "gapped_turns_pct": 1.0, "worst_gap": 0.113}
+{"calls": 150, "turns": 901, "failed_clauses": 2, "turn_ttfa_p50": 0.131, "turn_ttfa_p95": 0.186, "turn_ttfa_max": 0.251, "gapped_turns_pct": 46.8, "worst_gap": 0.438}
+{"calls": 200, "turns": 1143, "failed_clauses": 3, "turn_ttfa_p50": 0.24, "turn_ttfa_p95": 0.71, "turn_ttfa_max": 1.023, "gapped_turns_pct": 80.4, "worst_gap": 0.916}

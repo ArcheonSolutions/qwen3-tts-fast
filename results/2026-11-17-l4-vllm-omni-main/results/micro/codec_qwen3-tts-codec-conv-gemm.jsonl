@@ -1,0 +1,7 @@
+{"batch": 1, "frames": 1, "ms": 1.83}
+{"batch": 16, "frames": 1, "ms": 3.001}
+{"batch": 32, "frames": 1, "ms": 4.753}
+{"batch": 64, "frames": 1, "ms": 9.332}
+{"batch": 128, "frames": 1, "ms": 17.954}
+{"batch": 1, "frames": 25, "ms": 4.069}
+{"batch": 16, "frames": 25, "ms": 54.869}
